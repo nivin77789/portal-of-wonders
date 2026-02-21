@@ -23,8 +23,8 @@ const Home = () => {
       <section className="glass-card p-6 sm:p-10 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-bl-[80px] pointer-events-none" />
         <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
-          <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-3xl font-display font-bold text-white shadow-lg shadow-primary/30 shrink-0">
-            NM
+          <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-3xl font-display font-bold text-white shadow-lg shadow-primary/30 shrink-0 overflow-hidden">
+            <img src="/nivin.png" alt="Nivin Mathew S" className="w-full h-full object-cover" />
           </div>
           <div className="text-center md:text-left space-y-3 flex-1">
             <span className="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-semibold border border-emerald-500/30">
