@@ -31,8 +31,8 @@ export const DailyTasks = ({ tasks, onTaskChange }: DailyTasksProps) => {
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle className="text-2xl">75 Hard Daily Tasks</CardTitle>
-                        <CardDescription>Complete all tasks every day</CardDescription>
+                        <CardTitle className="text-2xl">my health care on my daily routine</CardTitle>
+                        <CardDescription>Track your daily health habits</CardDescription>
                     </div>
                     <div className="text-right">
                         <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">

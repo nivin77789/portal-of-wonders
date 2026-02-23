@@ -138,9 +138,9 @@ export default function Health() {
                             <Trophy className="h-6 w-6 text-primary-foreground" />
                         </div>
                         <div>
-                            <h1 className="text-4xl font-bold">75 Hard Challenge</h1>
+                            <h1 className="text-4xl font-bold">my health care on my daily routine</h1>
                             <p className="text-muted-foreground text-lg">
-                                Transform yourself in 75 days
+                                Consistency is the key to transformation
                             </p>
                         </div>
                     </div>
