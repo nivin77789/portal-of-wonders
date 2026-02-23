@@ -17,6 +17,8 @@ export default function SpaDetail() {
   const [isFetching, setIsFetching] = useState(false);
   const [fetchingCompleted, setFetchingCompleted] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isTrackingLocation, setIsTrackingLocation] = useState(false);
+  const [locationFetched, setLocationFetched] = useState(false);
 
   const galleryImages = [
     "Screenshot2026-02-23at6.03.19P.jpeg",
@@ -94,7 +96,14 @@ export default function SpaDetail() {
   ];
 
   const deviceSpecs = isRojee ? [
-    { type: "Primary", model: "iPhone 14 Plus", imei: "354892103487219", mac: "00:1A:2B:3C:4D:5E", ip: "192.168.1.14" },
+    {
+      type: "Primary",
+      model: "iPhone 14 Plus",
+      imei: "354892103487219",
+      mac: "00:1A:2B:3C:4D:5E",
+      ip: "192.168.1.14",
+      image: "/iphone_14_plus.webp"
+    },
     { type: "Secondary", model: "POCO M2", imei: "865492041234567", mac: "A1:B2:C3:D4:E5:F6", ip: "192.168.1.22" }
   ] : [
     { type: "Primary", model: "Generic Smartphone", imei: `35${randomStr.padStart(13, '0')}`, mac: `00:1A:2B:${parseInt(randomStr) % 99}:${parseInt(randomStr) % 99}:FF`, ip: `192.168.1.${parseInt(randomStr) % 255}` }
@@ -242,16 +251,63 @@ export default function SpaDetail() {
             </h3>
             <div className="grid grid-cols-1 gap-4">
               {deviceSpecs.map((device, idx) => (
-                <div key={idx} className="bg-black/20 rounded-xl p-4 border border-white/5 transition-all hover:bg-black/40 hover:border-indigo-500/40">
+                <div key={idx} className="bg-black/20 rounded-xl p-4 border border-white/5 transition-all hover:bg-black/40 hover:border-indigo-500/40 group/device">
+                  {device.image && (
+                    <div className="mb-4 flex justify-center">
+                      <img src={device.image} alt={device.model} className="h-32 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] animate-[floatLight_3s_infinite_alternate]" />
+                    </div>
+                  )}
                   <div className="flex justify-between items-center mb-3">
                     <span className="text-indigo-400 font-bold text-sm tracking-wide flex items-center gap-2"><FaMobileAlt /> {device.type} Device</span>
                     <span className="text-xs font-semibold px-2 py-1 bg-white/10 text-white rounded-md">{device.model}</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="grid grid-cols-2 gap-2 text-xs mb-4">
                     <div className="flex flex-col"><span className="text-gray-500 uppercase tracking-wider mb-0.5 mt-1">IMEI</span> <span className="text-gray-200 font-mono">{device.imei}</span></div>
                     <div className="flex flex-col"><span className="text-gray-500 uppercase tracking-wider mb-0.5 mt-1">MAC Address</span> <span className="text-gray-200 font-mono">{device.mac}</span></div>
                     <div className="flex flex-col col-span-2"><span className="text-gray-500 uppercase tracking-wider mb-0.5 mt-1">Internal IP Network</span> <span className="text-emerald-400 font-mono">{device.ip}</span></div>
                   </div>
+
+                  {device.model === "iPhone 14 Plus" && isRojee && (
+                    <div className="space-y-3">
+                      <button
+                        onClick={() => {
+                          setIsTrackingLocation(true);
+                          setTimeout(() => {
+                            setIsTrackingLocation(false);
+                            setLocationFetched(true);
+                          }, 3000);
+                        }}
+                        disabled={isTrackingLocation}
+                        className={`w-full py-2.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-all ${isTrackingLocation
+                          ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40 cursor-wait"
+                          : "bg-indigo-600/10 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-600 hover:text-white"
+                          }`}
+                      >
+                        <MdLocationOn className={isTrackingLocation ? "animate-ping" : ""} />
+                        {isTrackingLocation ? "Pinging Satellite..." : "Fetch Live Location"}
+                      </button>
+
+                      {locationFetched && (
+                        <div className="rounded-xl overflow-hidden border border-indigo-500/30 h-[200px] relative animate-[scaleIn_0.4s_ease_out] bg-[#0a0e27]">
+                          <div className="absolute top-2 left-2 z-20 bg-emerald-500/80 text-[8px] font-black px-1.5 py-0.5 rounded text-white animate-pulse">
+                            LIVE TRACKING
+                          </div>
+                          <MapContainer center={mapCenter} zoom={18} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
+                            <TileLayer
+                              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                              className="map-dark-filter"
+                            />
+                            <Circle
+                              center={mapCenter}
+                              radius={20}
+                              pathOptions={{ color: '#6366f1', fillColor: '#6366f1', fillOpacity: 0.6 }}
+                            />
+                            <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(0,0,0,0.8)] z-10"></div>
+                          </MapContainer>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -546,7 +602,7 @@ export default function SpaDetail() {
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
 
         /* Leaflet Dark Mode Strategy */
-        .leaflet-tile-pane {
+        .leaflet-tile-pane, .map-dark-filter {
           filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
         }
         .leaflet-control-container .leaflet-control-zoom {
