@@ -18,7 +18,7 @@ export const useAuth = () => {
         if (isAuth) {
             setUser({ uid: "mock-user-id" });
             setUserProfile({
-                initialWeight: 75,
+                initialWeight: 97,
                 height: 180,
                 startDate: "2024-01-01",
                 endDate: "2024-03-15",

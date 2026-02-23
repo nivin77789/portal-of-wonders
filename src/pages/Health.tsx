@@ -15,6 +15,7 @@ import { DopamineBoost } from "@/components/DopamineBoost";
 import { SkinCare } from "@/components/SkinCare";
 import { WorkoutPlan } from "@/components/WorkoutPlan";
 import { StepsTracker } from "@/components/StepsTracker";
+import { ProgressCharts } from "@/components/ProgressCharts";
 import { Calendar, Target, Trophy, Flame } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import confetti from "canvas-confetti";
@@ -42,13 +43,13 @@ export default function Health() {
         date: today,
         tasks: {},
         lookmaxingDone: false,
-        waterIntake: 0,
-        weight: userProfile?.initialWeight || 0,
+        waterIntake: 3.2, // Random starting value
+        weight: 79, // Current weight as requested
         notes: "",
         dopamineTasks: {},
         skincareTasks: {},
         workouts: {},
-        dailySteps: 0
+        dailySteps: 12450 // Random starting value
     });
 
     const [tempWeight, setTempWeight] = useState(userProfile?.initialWeight || 0);
@@ -131,7 +132,6 @@ export default function Health() {
     return (
         <div className="pb-20 relative">
             <div className="container mx-auto px-4 py-8 max-w-7xl">
-                {/* Page Title */}
                 <div className="mb-8">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="flex items-center justify-center w-12 h-12 rounded-full gradient-primary">
@@ -145,6 +145,12 @@ export default function Health() {
                         </div>
                     </div>
                 </div>
+
+                {/* Progress Chart */}
+                <div className="mb-8">
+                    <ProgressCharts />
+                </div>
+
                 {/* Motivational Quote */}
                 <div className="mb-8">
                     <MotivationalQuote quote={quote} />
