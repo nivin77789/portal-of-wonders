@@ -10,7 +10,13 @@ import Lust from "./pages/Lust";
 import SpaDashboard from "./pages/SpaDashboard";
 import ClientDetail from "./pages/ClientDetail";
 import PlaceholderPage from "./pages/PlaceholderPage";
+import Health from "./pages/Health";
+import Family from "./pages/Family";
+import Cravings from "./pages/Cravings";
+import Chat from "./pages/Chat";
+import Happiness from "./pages/Happiness";
 import NotFound from "./pages/NotFound";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -20,21 +26,22 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Login />} />
           <Route element={<AppLayout />}>
             <Route path="/home" element={<Home />} />
-            <Route path="/chat" element={<PlaceholderPage title="Chat" iconName="MessageCircle" />} />
+            <Route path="/chat" element={<Chat />} />
             <Route path="/dashboard" element={<PlaceholderPage title="Dashboard" iconName="BarChart3" />} />
             <Route path="/services" element={<PlaceholderPage title="Services" iconName="Briefcase" />} />
-            <Route path="/happiness" element={<PlaceholderPage title="Happiness" iconName="Smile" />} />
+            <Route path="/happiness" element={<Happiness />} />
             <Route path="/lust" element={<Lust />} />
             <Route path="/sad" element={<PlaceholderPage title="Sad" iconName="Frown" />} />
-            <Route path="/craving" element={<PlaceholderPage title="Craving" iconName="UtensilsCrossed" />} />
+            <Route path="/craving" element={<Cravings />} />
             <Route path="/worried" element={<PlaceholderPage title="Worried" iconName="AlertTriangle" />} />
             <Route path="/pleasure" element={<PlaceholderPage title="Pleasure" iconName="Sparkles" />} />
-            <Route path="/health" element={<PlaceholderPage title="Health" iconName="HeartPulse" />} />
-            <Route path="/family" element={<PlaceholderPage title="Family" iconName="Users" />} />
+            <Route path="/health" element={<Health />} />
+            <Route path="/family" element={<Family />} />
             <Route path="/spa" element={<SpaDashboard />} />
             <Route path="/spa/:id" element={<ClientDetail />} />
             <Route path="/partners" element={<PlaceholderPage title="Partners" iconName="Heart" />} />

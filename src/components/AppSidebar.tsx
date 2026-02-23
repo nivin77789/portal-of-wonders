@@ -44,11 +44,7 @@ const AppSidebar = ({ isOpen, onClose }: AppSidebarProps) => {
       >
         <div className="p-8 flex flex-col h-full">
           {/* Logo Section */}
-          <div className="flex items-center justify-between mb-12">
-            <button onClick={() => { navigate("/home"); onClose(); }} className="flex flex-col items-start leading-tight group">
-              <span className="font-display font-black text-2xl tracking-[4px] uppercase text-white group-hover:text-indigo-400 transition-colors">Portal</span>
-              <span className="text-[0.7rem] font-bold text-indigo-500/70 tracking-[6px] uppercase ml-1">of_Wonders</span>
-            </button>
+          <div className="flex items-center justify-end mb-12">
             <button onClick={onClose} className="lg:hidden p-2 text-slate-400 hover:text-white bg-white/5 rounded-lg border border-white/10 transition-all">
               <X className="w-5 h-5" />
             </button>

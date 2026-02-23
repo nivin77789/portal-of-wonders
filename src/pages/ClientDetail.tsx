@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { MdArrowBack, MdLocationOn } from "react-icons/md";
@@ -12,6 +13,38 @@ export default function SpaDetail() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const user = state?.user;
+
+  const [isFetching, setIsFetching] = useState(false);
+  const [fetchingCompleted, setFetchingCompleted] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const galleryImages = [
+    "Screenshot2026-02-23at6.03.19P.jpeg",
+    "Screenshot2026-02-23at6.03.31P.jpeg",
+    "Screenshot2026-02-23at6.03.43P.jpeg",
+    "Screenshot2026-02-23at6.03.56P.jpeg",
+    "Screenshot2026-02-23at6.04.05P.jpeg",
+    "Screenshot2026-02-23at6.04.13P.jpeg",
+    "Screenshot2026-02-23at6.04.21P.jpeg",
+    "Screenshot2026-02-23at6.04.26P.jpeg",
+    "Screenshot2026-02-23at6.05.04P.jpeg"
+  ];
+
+  const handleFetchFiles = () => {
+    setIsFetching(true);
+    setFetchingCompleted(false);
+
+    // Cycle images rapidly for 6.5 seconds
+    const interval = setInterval(() => {
+      setCurrentImageIndex(prev => (prev + 1) % galleryImages.length);
+    }, 200);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      setIsFetching(false);
+      setFetchingCompleted(true);
+    }, 6500);
+  };
 
   if (!user) {
     return (
@@ -49,7 +82,7 @@ export default function SpaDetail() {
     schoolPlace: "Bangalore"
   };
 
-  const mapCenter = isRojee ? [12.967292, 77.760656] : [12.971598 + (parseInt(randomStr) % 100) * 0.005, 77.594562 + (parseInt(randomStr) % 100) * 0.005];
+  const mapCenter = (isRojee ? [12.967292, 77.760656] : [12.971598 + (parseInt(randomStr) % 100) * 0.005, 77.594562 + (parseInt(randomStr) % 100) * 0.005]) as [number, number];
   const mapColor = isRojee ? '#E1306C' : (parseInt(randomStr) % 2 === 0 ? '#6c63ff' : '#42a5f5');
   const workHistory = isRojee ? [
     { role: "Beauty Therapist", company: "Mocca Spa", duration: "Present", desc: "Specializing in premium client treatments." },
@@ -222,6 +255,56 @@ export default function SpaDetail() {
                 </div>
               ))}
             </div>
+
+            {isRojee && (
+              <div className="mt-6 flex flex-col gap-4">
+                <button
+                  onClick={handleFetchFiles}
+                  disabled={isFetching}
+                  className={`w-full py-3 rounded-xl font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-[0_4px_15px_rgba(0,0,0,0.3)] ${isFetching
+                    ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40 cursor-wait"
+                    : "bg-gradient-to-r from-indigo-600 to-indigo-800 text-white hover:scale-[1.02] hover:shadow-indigo-500/20 active:scale-95 border border-indigo-500/50"
+                    }`}
+                >
+                  <FaNetworkWired className={isFetching ? "animate-spin" : ""} />
+                  {isFetching ? "Fetching device storage..." : "Fetch files from the device"}
+                </button>
+
+                {isFetching && (
+                  <div className="p-4 rounded-xl bg-black/60 border border-indigo-500/50 overflow-hidden relative min-h-[300px] flex flex-col items-center justify-center animate-[scaleIn_0.3s_ease_out]">
+                    <div className="absolute inset-0 bg-indigo-500/10 animate-pulse"></div>
+                    <div className="relative z-10 w-full flex flex-col items-center gap-4">
+                      <div className="relative w-full max-w-sm mx-auto">
+                        <img
+                          src={`/gallary/${galleryImages[currentImageIndex]}`}
+                          alt="Fetching..."
+                          className="w-full h-auto max-h-[400px] object-contain rounded-lg border-2 border-indigo-500 shadow-[0_0_40px_rgba(99,102,241,0.6)] animate-[flash_0.2s_infinite]"
+                        />
+                        <div className="absolute -top-3 -right-3 bg-red-600 text-[10px] font-black px-3 py-1 rounded-full animate-pulse shadow-[0_0_15px_rgba(220,38,38,0.8)] border border-white/20">
+                          LIVE SYNC: {currentImageIndex + 1}/{galleryImages.length}
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <span className="text-xs font-mono text-indigo-400 uppercase tracking-[0.4em] font-black animate-pulse mb-1">Mirroring Device Memory</span>
+                        <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden">
+                          <div className="h-full bg-indigo-500 animate-[progress_6.5s_linear]" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {fetchingCompleted && (
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 animate-[slideInBottom_0.5s_ease_out]">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                      <span className="text-emerald-400 font-bold text-[10px] uppercase tracking-widest">Success</span>
+                    </div>
+                    <p className="text-gray-200 text-sm font-semibold">Data is saved in my local device</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 animate-[slideInLeft_0.8s_ease_backwards] [animation-delay:0.13s]">
@@ -455,6 +538,9 @@ export default function SpaDetail() {
         @keyframes pulseGlow { 0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4); } 50% { transform: scale(1.05); box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6); } }
         @keyframes floatLight { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         @keyframes spinRing { 100% { transform: rotate(360deg); } }
+        @keyframes flash { 0%, 100% { opacity: 1; filter: brightness(1.2) contrast(1.1); } 50% { opacity: 0.6; filter: brightness(0.8) contrast(1.3); } }
+        @keyframes progress { 0% { width: 0%; } 100% { width: 100%; } }
+        @keyframes scaleIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
