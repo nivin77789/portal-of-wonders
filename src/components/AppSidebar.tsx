@@ -38,7 +38,7 @@ const AppSidebar = ({ isOpen, onClose }: AppSidebarProps) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-[280px] bg-[#03060d]/90 backdrop-blur-2xl border-r border-indigo-500/10 z-[80] transform transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] custom-scrollbar overflow-y-auto
+        className={`fixed top-0 left-0 h-full w-[280px] bg-[#03060d]/90 backdrop-blur-2xl border-r border-indigo-500/10 z-[80] transform transition-all duration-500 ease-in-out custom-scrollbar overflow-y-auto
           ${isOpen ? "translate-x-0 opacity-100" : "-translate-x-full lg:translate-x-0"} 
           shadow-[20px_0_40px_rgba(0,0,0,0.4)] md:shadow-none`}
       >
