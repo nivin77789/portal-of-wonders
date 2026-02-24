@@ -130,14 +130,33 @@ const SpaDashboard = () => {
                     <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Client ID: #{row.id.toString().padStart(4, "0")}</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3 mt-2 relative z-10">
-                  <div className="bg-black/40 rounded-2xl p-3 border border-white/5 group-hover:bg-black/60 transition-colors">
-                    <div className="flex items-center gap-1.5 text-xs text-primary font-bold uppercase tracking-widest mb-1.5"><CalendarCheck className="w-3 h-3" /> Visits</div>
-                    <div className="text-xl font-bold text-foreground">{row.totalVisit}</div>
+                <div className="grid grid-cols-2 gap-3 mt-1 relative z-10">
+                  <div className="bg-black/40 rounded-xl p-2.5 border border-white/5">
+                    <div className="text-[10px] text-primary font-bold uppercase tracking-widest mb-1">Visits</div>
+                    <div className="text-lg font-bold text-foreground">{row.totalVisit}</div>
                   </div>
-                  <div className="bg-black/40 rounded-2xl p-3 border border-white/5 group-hover:bg-black/60 transition-colors">
-                    <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold uppercase tracking-widest mb-1.5"><DollarSign className="w-3 h-3" /> Spend</div>
-                    <div className="text-xl font-bold text-foreground truncate" title={row.totalSpend}>{row.totalSpend}</div>
+                  <div className="bg-black/40 rounded-xl p-2.5 border border-white/5">
+                    <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mb-1">Spend</div>
+                    <div className="text-lg font-bold text-foreground truncate" title={row.totalSpend}>{row.totalSpend}</div>
+                  </div>
+                </div>
+
+                <div className="space-y-2 mt-1 relative z-10">
+                  <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-tighter">
+                    <span className="text-emerald-400">Truth: {row.honesty.truth}%</span>
+                    <span className="text-rose-400">Lie: {row.honesty.lie}%</span>
+                    <span className="text-amber-400">Doubt: {row.honesty.doubt}%</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden flex">
+                    <div style={{ width: `${row.honesty.truth}%` }} className="h-full bg-emerald-500" />
+                    <div style={{ width: `${row.honesty.lie}%` }} className="h-full bg-rose-500" />
+                    <div style={{ width: `${row.honesty.doubt}%` }} className="h-full bg-amber-500" />
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-2">
+                    <div className={`w-2 h-2 rounded-full ${row.lifestyle.smoking.includes("Smoker") && !row.lifestyle.smoking.includes("Non") ? "bg-rose-500 animate-pulse" : "bg-emerald-500"}`} />
+                    <span className="text-[10px] font-bold text-slate-400 uppercase truncate">
+                      {row.lifestyle.smoking}
+                    </span>
                   </div>
                 </div>
                 <div className="mt-2 w-full flex items-center justify-between relative z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

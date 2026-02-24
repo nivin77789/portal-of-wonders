@@ -2,27 +2,15 @@ import { useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Menu, LogOut, Settings, User } from "lucide-react";
 import {
-  FaComments, FaChartBar, FaHome, FaSmile,
-  FaKissWinkHeart, FaSadTear, FaUtensils, FaExclamationTriangle,
-  FaGrinHearts, FaHeartbeat, FaUsers
+  FaChartBar, FaHome, FaKissWinkHeart, FaUtensils,
+  FaHeartbeat, FaUsers
 } from "react-icons/fa";
 import AppSidebar from "./AppSidebar";
 import BackgroundOrbs from "./BackgroundOrbs";
 import MobileNav from "./MobileNav";
+import ChatWidget from "./ChatWidget";
 
-const menuItems = [
-  { name: "Chat", path: "/chat", icon: <FaComments /> },
-  { name: "Dashboard", path: "/spa", icon: <FaChartBar /> },
-  { name: "Home", path: "/home", icon: <FaHome /> },
-  { name: "Happiness", path: "/happiness", icon: <FaSmile /> },
-  { name: "Lust", path: "/lust", icon: <FaKissWinkHeart /> },
-  { name: "Sad", path: "/sad", icon: <FaSadTear /> },
-  { name: "Craving", path: "/craving", icon: <FaUtensils /> },
-  { name: "Worried", path: "/worried", icon: <FaExclamationTriangle /> },
-  { name: "Pleasure", path: "/pleasure", icon: <FaGrinHearts /> },
-  { name: "Health", path: "/health", icon: <FaHeartbeat /> },
-  { name: "Family", path: "/family", icon: <FaUsers /> },
-];
+
 
 const AppLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -73,6 +61,7 @@ const AppLayout = () => {
       </div>
 
       <MobileNav />
+      <ChatWidget />
     </div>
   );
 };

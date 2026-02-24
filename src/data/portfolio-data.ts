@@ -46,7 +46,6 @@ export const skills = [
 
 export const languages = [
   { lang: "Malayalam", prof: "Native or Bilingual", p: 100 },
-  { lang: "Kannada", prof: "Full Professional", p: 90 },
   { lang: "English", prof: "Professional Working", p: 85 },
   { lang: "Hindi", prof: "Limited Working", p: 50 },
   { lang: "Tamil", prof: "Limited Working", p: 40 },

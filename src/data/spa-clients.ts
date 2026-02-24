@@ -18,8 +18,10 @@ export function hashString(str: string): number {
 
 export function honestyPercent(name: string) {
   const h = hashString(name);
-  const truth = (h % 71) + 15;
-  return { truth, lie: 100 - truth };
+  const truth = (h % 60) + 20; // 20-80%
+  const doubt = (h % 15) + 5;   // 5-20%
+  const lie = 100 - (truth + doubt);
+  return { truth, lie, doubt };
 }
 
 function pick<T>(name: string, arr: T[]): T {
@@ -60,9 +62,14 @@ export interface ClientData {
   mindset: string;
   opinion: string;
   stiRisk: string;
-  honesty: { truth: number; lie: number };
+  honesty: { truth: number; lie: number; doubt: number };
+  satisfactionMetrics: { emotional: number; professional: number; loyalty: number };
+  healthRisk: { sti: string; mental: string; physical: string };
   totalVisit: number;
   totalSpend: string;
+  traits: string[];
+  lifestyle: { smoking: string; alcohol: string; sleep: string };
+  languages: string[];
 }
 
 export function generateClients(): ClientData[] {
@@ -77,7 +84,7 @@ export function generateClients(): ClientData[] {
 
   return CLIENT_NAMES.map((name, idx) => {
     const h = hashString(name + idx);
-    const { truth, lie } = honestyPercent(name + idx);
+    const { truth, lie, doubt } = honestyPercent(name + idx);
 
     let user: ClientData = {
       id: idx,
@@ -95,12 +102,29 @@ export function generateClients(): ClientData[] {
       mindset: pick(name, mindsets),
       opinion: pick(name, opinions),
       stiRisk: pick(name, stiRiskLevels),
-      honesty: { truth, lie },
+      honesty: { truth, lie, doubt },
+      satisfactionMetrics: {
+        emotional: 50 + (h % 50),
+        professional: 60 + (h % 40),
+        loyalty: 40 + (h % 60)
+      },
+      healthRisk: {
+        sti: pick(name, stiRiskLevels),
+        mental: pick(name, ["Stable", "Stressed", "Anxious"]),
+        physical: pick(name, ["Fit", "Average", "Sedentary"])
+      },
       totalVisit: 1 + (h % 20),
       totalSpend: `₹${((1 + (h % 50)) * 1200).toLocaleString()}`,
+      traits: [pick(name, strengths), pick(name, weaknesses)],
+      lifestyle: {
+        smoking: (h % 2 === 0) ? "Non-smoker" : "Occasional",
+        alcohol: (h % 3 === 0) ? "Teetotaler" : "Social",
+        sleep: "7-8 hours"
+      },
+      languages: ["English", "Hindi"]
     };
 
-    if (name === "Rojee Tamang") {
+    if (name.includes("Rojee")) {
       user = {
         ...user,
         age: 28,
@@ -114,9 +138,16 @@ export function generateClients(): ClientData[] {
         weakness: "Impatient",
         mindset: "Bold but Low behaviour sense. less work ethiks",
         opinion: "One of My best",
-        stiRisk: "Medium",
-        totalVisit: 24,
-        totalSpend: "₹25,100",
+        stiRisk: "Low",
+        honesty: { truth: 40, lie: 50, doubt: 10 },
+        satisfaction: "9.5/10",
+        satisfactionMetrics: { emotional: 95, professional: 88, loyalty: 98 },
+        healthRisk: { sti: "Low", mental: "Highly Resilient", physical: "Dancing/Active" },
+        totalVisit: 81,
+        totalSpend: "₹128,100",
+        traits: ["High Emotional Intelligence", "Resilient", "Strategic Manager", "Loyal"],
+        lifestyle: { smoking: "Smoker (indiment, connect, shift)", alcohol: "Wine (Social)", sleep: "-" },
+        languages: ["English", "Hindi", "Nepali"]
       };
     }
 

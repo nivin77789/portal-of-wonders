@@ -124,26 +124,82 @@ export default function SpaDetail() {
   };
 
   const transactions = isRojee ? [
-    { id: "TXN-8091", amount: "₹4,500", date: "20 Feb 2026", status: "Completed", desc: "Premium Session" },
-    { id: "TXN-7123", amount: "₹3,200", date: "15 Feb 2026", status: "Completed", desc: "Standard Therapy" },
-    { id: "TXN-6642", amount: "₹5,000", date: "10 Feb 2026", status: "Completed", desc: "Overtime/Extra" },
-    { id: "TXN-5011", amount: "₹12,400", date: "02 Feb 2026", status: "Completed", desc: "Long-weekend Package" },
+    // Specified Transactions (Sorted Newest First)
+    { id: "TXN-9025", amount: "₹1,000", date: "12 Nov 2025", status: "Completed", desc: "Portal Session" },
+    { id: "TXN-9018", amount: "₹500", date: "18 Jul 2025", status: "Completed", desc: "Quick Therapy" },
+    { id: "TXN-9016", amount: "₹500", date: "16 Jul 2025", status: "Completed", desc: "Short Session" },
+    { id: "TXN-9026", amount: "₹2,500", date: "26 May 2025", status: "Completed", desc: "Standard Service" },
+    { id: "TXN-8044", amount: "₹2,500", date: "14 Apr 2025", status: "Completed", desc: "Standard Service" },
+
+    // More 2.5k transactions between 2024 and 2025 (Hitting 82.3k total in portal)
+    { id: "TXN-7910", amount: "₹2,500", date: "05 Mar 2025", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7905", amount: "₹2,500", date: "15 Feb 2025", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7901", amount: "₹2,500", date: "28 Jan 2025", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7880", amount: "₹2,500", date: "10 Jan 2025", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7850", amount: "₹2,500", date: "20 Dec 2024", status: "Completed", desc: "Holiday Session" },
+    { id: "TXN-7840", amount: "₹2,500", date: "05 Dec 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7820", amount: "₹2,500", date: "20 Nov 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7810", amount: "₹2,500", date: "05 Nov 2024", status: "Completed", desc: "Routine Visit" },
+
+    { id: "TXN-7121", amount: "₹2,000", date: "21 Oct 2024", status: "Completed", desc: "Specified Session" },
+    { id: "TXN-7900", amount: "₹2,500", date: "05 Oct 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7139", amount: "₹2,300", date: "13 Sep 2024", status: "Completed", desc: "Premium Therapy" },
+    { id: "TXN-7885", amount: "₹2,500", date: "25 Aug 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7870", amount: "₹2,500", date: "10 Aug 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7860", amount: "₹2,500", date: "22 Jul 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7855", amount: "₹2,500", date: "05 Jul 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7845", amount: "₹2,500", date: "18 Jun 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7835", amount: "₹2,500", date: "05 Jun 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7125", amount: "₹2,000", date: "25 May 2024", status: "Completed", desc: "Specified Session" },
+    { id: "TXN-7830", amount: "₹2,500", date: "12 May 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7825", amount: "₹2,500", date: "28 Apr 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7815", amount: "₹2,400", date: "15 Apr 2024", status: "Completed", desc: "Balance Adjust" },
+    { id: "TXN-7129", amount: "₹2,300", date: "29 Mar 2024", status: "Completed", desc: "Specified Session" },
+    { id: "TXN-7811", amount: "₹2,500", date: "15 Mar 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7805", amount: "₹2,500", date: "28 Feb 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7801", amount: "₹2,500", date: "15 Feb 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-7106", amount: "₹2,000", date: "06 Feb 2024", status: "Completed", desc: "Specified Session" },
+    { id: "TXN-7118", amount: "₹1,300", date: "18 Jan 2024", status: "Completed", desc: "Specified Session" },
+    { id: "TXN-7100", amount: "₹2,500", date: "05 Jan 2024", status: "Completed", desc: "Routine Visit" },
+    { id: "TXN-6127", amount: "₹1,000", date: "27 Oct 2023", status: "Completed", desc: "First Portal Session" },
+
+    // Additional 2.5k to hit the 82.3k total (11 more)
+    { id: "TXN-6120", amount: "₹2,500", date: "15 Oct 2023", status: "Completed", desc: "Backlog Session" },
+    { id: "TXN-6110", amount: "₹2,500", date: "01 Oct 2023", status: "Completed", desc: "Backlog Session" },
+    { id: "TXN-6100", amount: "₹2,500", date: "15 Sep 2023", status: "Completed", desc: "Backlog Session" },
+    { id: "TXN-6090", amount: "₹2,500", date: "01 Sep 2023", status: "Completed", desc: "Backlog Session" },
+    { id: "TXN-6080", amount: "₹2,500", date: "15 Aug 2023", status: "Completed", desc: "Backlog Session" },
+    { id: "TXN-6070", amount: "₹2,500", date: "01 Aug 2023", status: "Completed", desc: "Backlog Session" },
+    { id: "TXN-6060", amount: "₹2,500", date: "15 Jul 2023", status: "Completed", desc: "Backlog Session" },
+    { id: "TXN-6050", amount: "₹2,500", date: "01 Jul 2023", status: "Completed", desc: "Backlog Session" },
+    { id: "TXN-6040", amount: "₹2,500", date: "15 Jun 2023", status: "Completed", desc: "Backlog Session" },
+    { id: "TXN-6030", amount: "₹2,500", date: "01 Jun 2023", status: "Completed", desc: "Backlog Session" },
+    { id: "TXN-6020", amount: "₹2,500", date: "15 May 2023", status: "Completed", desc: "Backlog Session" },
   ] : [];
 
-  const totalSpend = isRojee ? "₹25,100" : "₹0";
+  const totalSpend = isRojee ? "₹128,100" : "₹0";
+  const rojeeSpendBreakdown = isRojee ? {
+    portal: "₹82,300",
+    outside: "₹45,800",
+    outsideDetails: "33 Visit Mix (1k, 1.2k, 1.5k, 1.8k)"
+  } : null;
 
   const honestyData = [
     { name: "Truth", value: user.honesty.truth },
     { name: "Lie", value: user.honesty.lie },
+    { name: "Doubt", value: user.honesty.doubt },
   ];
 
   const satisfactionData = [
-    { name: "Satisfaction", value: parseInt(user.satisfaction) },
-    { name: "Remaining", value: 10 - parseInt(user.satisfaction) },
+    { name: "Emotional", value: user.satisfactionMetrics.emotional },
+    { name: "Professional", value: user.satisfactionMetrics.professional },
+    { name: "Loyalty", value: user.satisfactionMetrics.loyalty },
   ];
 
-  const stiValue = user.stiRisk === "Low" ? 1 : user.stiRisk === "Medium" ? 2 : 3;
-  const stiData = [{ name: user.name, value: stiValue, risk: user.stiRisk }];
+  const healthData = [
+    { name: "STI Risk", value: user.healthRisk.sti === "Low" ? 10 : user.healthRisk.sti === "Medium" ? 50 : 90, label: user.healthRisk.sti },
+    { name: "Mental", value: user.healthRisk.mental.includes("Resilient") ? 90 : 60, label: user.healthRisk.mental },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0e27] via-[#1a1f3a] to-[#0f1629] text-gray-200 p-5 md:p-8 relative overflow-y-auto font-sans animate-[fadeInDown_0.8s_ease_backwards]">
@@ -449,8 +505,13 @@ export default function SpaDetail() {
 
           <div className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 animate-[slideInLeft_0.8s_ease_backwards] [animation-delay:0.2s]">
             <h3 className="flex items-center gap-2 mt-0 mb-5 text-[1.25rem] text-white border-b border-white/10 pb-3">
-              <FaBrain className="text-pink-400" /> Psychology Profile
+              <FaBrain className="text-pink-400" /> Psychology & Traits
             </h3>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {user.traits.map((trait: string, i: number) => (
+                <span key={i} className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-[10px] font-black rounded-full uppercase tracking-widest">{trait}</span>
+              ))}
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-black/20 p-4 rounded-xl border border-transparent transition-all hover:border-indigo-500/40 hover:bg-black/40">
                 <span className="text-[0.85rem] text-gray-400 uppercase tracking-widest">Strength</span>
@@ -481,8 +542,25 @@ export default function SpaDetail() {
               <FaMoneyBillWave className="text-indigo-400" />
               <span>Total Spend Overview</span>
             </div>
-            <div className="text-[3.5rem] font-extrabold my-4 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2),0_0_30px_rgba(108,99,255,0.5)] z-10">
-              {totalSpend}
+            <div className="flex flex-col items-center z-10">
+              <div className="text-[3.5rem] font-extrabold text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2),0_0_30px_rgba(108,99,255,0.5)] leading-tight">
+                {totalSpend}
+              </div>
+              {rojeeSpendBreakdown && (
+                <div className="mt-4 flex flex-col gap-2 w-full max-w-xs animate-[fadeIn_0.5s_ease_out]">
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-white/5 border border-white/10">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Portal Paid</span>
+                    <span className="text-sm font-black text-indigo-400">{rojeeSpendBreakdown.portal}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-pink-500/5 border border-pink-500/20">
+                    <div className="flex flex-col items-start leading-none">
+                      <span className="text-[10px] font-bold text-pink-400 uppercase tracking-widest">Outside Paid</span>
+                      <span className="text-[8px] text-pink-400/60 font-mono mt-1">{rojeeSpendBreakdown.outsideDetails}</span>
+                    </div>
+                    <span className="text-sm font-black text-pink-500">{rojeeSpendBreakdown.outside}</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <button className="bg-gradient-to-r from-[#ff416c] to-[#ff4b2b] text-white border-none text-[1.1rem] px-8 py-3 rounded-full font-bold cursor-pointer flex items-center gap-2.5 shadow-[0_8px_20px_rgba(255,65,108,0.4)] transition-all hover:-translate-y-1 hover:scale-105 hover:shadow-[0_12px_25px_rgba(255,65,108,0.6)] z-10 mt-2">
@@ -518,24 +596,70 @@ export default function SpaDetail() {
               <p className="text-gray-500 italic">No transactions found.</p>
             )}
           </div>
+
+          <div className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 animate-[slideInBottom_0.8s_ease_backwards] [animation-delay:0.25s]">
+            <h3 className="flex items-center gap-2 mt-0 mb-5 text-[1.25rem] text-white border-b border-white/10 pb-3">
+              <FaBrain className="text-emerald-400" /> Lifestyle & Identity
+            </h3>
+            <div className="grid grid-cols-1 gap-4">
+              <div className="flex justify-between items-center p-3 bg-black/20 rounded-xl">
+                <span className="text-[0.85rem] text-gray-400 uppercase tracking-widest">Smoking</span>
+                <span className="font-semibold text-white">{user.lifestyle.smoking}</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-black/20 rounded-xl">
+                <span className="text-[0.85rem] text-gray-400 uppercase tracking-widest">Alcohol</span>
+                <span className="font-semibold text-white">{user.lifestyle.alcohol}</span>
+              </div>
+              <div className="mt-2">
+                <span className="text-[0.85rem] text-gray-400 uppercase tracking-widest block mb-2">Languages Known</span>
+                <div className="flex flex-wrap gap-2">
+                  {user.languages.map((lang: string, i: number) => (
+                    <span key={i} className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[10px] font-black rounded uppercase tracking-tighter">{lang}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* RIGHT COLUMN: Charts */}
         <div className="flex flex-col gap-8">
           <div className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 shadow-[0_8px_32px_rgba(0,0,0,0.4)] animate-[slideInRight_0.8s_ease_backwards] min-h-[280px]">
-            <h3 className="text-white mt-0 mb-4 border-b border-white/10 pb-3 flex items-center gap-2">Honesty Analysis</h3>
-            <div className="h-[220px]">
+            <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
+              <h3 className="text-white m-0 flex items-center gap-2">
+                <FaRegCommentDots className="text-indigo-400" /> Honesty Analysis
+              </h3>
+              <div className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest ${user.honesty.truth > 70 ? "bg-emerald-500/20 text-emerald-400" : user.honesty.truth > 40 ? "bg-amber-500/20 text-amber-400" : "bg-rose-500/20 text-rose-400"}`}>
+                {user.honesty.truth > 70 ? "Reliable" : user.honesty.truth > 40 ? "Mixed" : "Caution"}
+              </div>
+            </div>
+            <div className="h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={honestyData}>
-                  <XAxis dataKey="name" stroke="#ccc" tick={{ fill: "#ccc" }} axisLine={false} tickLine={false} />
+                <BarChart data={honestyData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="name" stroke="#ccc" tick={{ fill: "#ccc", fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis hide domain={[0, 100]} />
                   <Tooltip cursor={{ fill: "rgba(255,255,255,0.05)" }} contentStyle={{ backgroundColor: "#111", border: "1px solid #333", borderRadius: "8px", color: "white" }} />
-                  <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+                  <Bar dataKey="value" radius={[6, 6, 0, 0]} label={{ position: 'top', fill: '#fff', fontSize: 10, formatter: (val: number) => `${val}%` }}>
                     {honestyData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={index === 0 ? "#51cb95" : "#ff736e"} />
+                      <Cell key={`cell-${index}`} fill={index === 0 ? "#51cb95" : index === 1 ? "#ff736e" : "#ffcc00"} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              <div className="text-center p-2 bg-black/20 rounded-lg">
+                <div className="text-[8px] text-gray-500 uppercase font-black">Truth</div>
+                <div className="text-[10px] font-bold text-white">{user.honesty.truth}%</div>
+              </div>
+              <div className="text-center p-2 bg-black/20 rounded-lg">
+                <div className="text-[8px] text-gray-500 uppercase font-black">Doubt</div>
+                <div className="text-[10px] font-bold text-amber-400">{user.honesty.doubt}%</div>
+              </div>
+              <div className="text-center p-2 bg-black/20 rounded-lg">
+                <div className="text-[8px] text-gray-500 uppercase font-black">Lie</div>
+                <div className="text-[10px] font-bold text-rose-400">{user.honesty.lie}%</div>
+              </div>
             </div>
           </div>
 
@@ -545,23 +669,16 @@ export default function SpaDetail() {
             </h3>
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={satisfactionData}
-                    dataKey="value"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    innerRadius={50}
-                    paddingAngle={5}
-                    stroke="none"
-                  >
-                    {satisfactionData.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                <BarChart data={satisfactionData} layout="vertical">
+                  <XAxis type="number" hide />
+                  <YAxis dataKey="name" type="category" stroke="#ccc" width={80} axisLine={false} tickLine={false} />
+                  <Tooltip cursor={{ fill: "rgba(255,255,255,0.05)" }} contentStyle={{ backgroundColor: "#111", border: "1px solid #333", borderRadius: "8px", color: "white" }} />
+                  <Bar dataKey="value" radius={[0, 8, 8, 0]}>
+                    {satisfactionData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: "#111", border: "1px solid #333", borderRadius: "8px", color: "white" }} />
-                </PieChart>
+                  </Bar>
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -572,11 +689,15 @@ export default function SpaDetail() {
             </h3>
             <div className="h-[160px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stiData} layout="vertical">
-                  <XAxis type="number" stroke="#ccc" domain={[0, 3]} ticks={[0, 1, 2, 3]} axisLine={false} tickLine={false} />
+                <BarChart data={healthData} layout="vertical">
+                  <XAxis type="number" hide domain={[0, 100]} />
                   <YAxis dataKey="name" type="category" stroke="#ccc" width={80} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={{ backgroundColor: "#111", border: "1px solid #333", borderRadius: "8px", color: "white" }} />
-                  <Bar dataKey="value" radius={[0, 8, 8, 0]} fill={STI_COLORS[user.stiRisk]} barSize={20} />
+                  <Bar dataKey="value" radius={[0, 8, 8, 0]}>
+                    {healthData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.value > 80 ? "#51cb95" : entry.value > 40 ? "#ffcc00" : "#ff736e"} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -597,6 +718,7 @@ export default function SpaDetail() {
         @keyframes flash { 0%, 100% { opacity: 1; filter: brightness(1.2) contrast(1.1); } 50% { opacity: 0.6; filter: brightness(0.8) contrast(1.3); } }
         @keyframes progress { 0% { width: 0%; } 100% { width: 100%; } }
         @keyframes scaleIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
         
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
