@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { MdArrowBack, MdLocationOn } from "react-icons/md";
-import { FaBrain, FaRegCommentDots, FaShieldAlt, FaHeartbeat, FaInstagram, FaWhatsapp, FaFacebookF, FaUndo, FaHistory, FaBriefcase, FaMoneyBillWave, FaSnapchatGhost, FaEnvelope, FaGraduationCap, FaSimCard, FaPhoneAlt, FaLinkedin, FaMobileAlt, FaNetworkWired, FaLandmark } from "react-icons/fa";
+import { FaBrain, FaRegCommentDots, FaShieldAlt, FaHeartbeat, FaInstagram, FaWhatsapp, FaFacebookF, FaUndo, FaHistory, FaBriefcase, FaMoneyBillWave, FaSnapchatGhost, FaEnvelope, FaGraduationCap, FaSimCard, FaPhoneAlt, FaLinkedin, FaMobileAlt, FaNetworkWired, FaLandmark, FaLock, FaCheckCircle } from "react-icons/fa";
 import { MapContainer, TileLayer, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -26,6 +26,9 @@ export default function SpaDetail() {
   const [isRecoveryModalOpen, setIsRecoveryModalOpen] = useState(false);
   const [adInterval, setAdInterval] = useState(2);
   const [selectedWebsites, setSelectedWebsites] = useState<string[]>([]);
+  const [showOtherOptions, setShowOtherOptions] = useState(true);
+  const [isDecrypting, setIsDecrypting] = useState(false);
+  const [isDecrypted, setIsDecrypted] = useState(false);
 
   const galleryImages = [
     "Screenshot2026-02-23at6.03.19P.jpeg",
@@ -695,7 +698,12 @@ export default function SpaDetail() {
               <div className="bg-[#1a1a24] border border-white/10 rounded-[30px] w-full max-w-lg overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)] animate-[scaleIn_0.4s_ease_out] relative">
                 <div className="absolute top-4 right-4 z-10">
                   <button
-                    onClick={() => setIsRecoveryModalOpen(false)}
+                    onClick={() => {
+                      setIsRecoveryModalOpen(false);
+                      setShowOtherOptions(true);
+                      setIsDecrypting(false);
+                      setIsDecrypted(false);
+                    }}
                     className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
                   >
                     ✕
@@ -706,110 +714,204 @@ export default function SpaDetail() {
                   <h2 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
                     <FaUndo className="text-pink-500" /> Recover Spend
                   </h2>
-                  <p className="text-gray-400 text-sm mb-6">
-                    Follow the protocol to initiate the spend recovery sequence.
-                  </p>
+                  <div className="flex items-center justify-between mb-6">
+                    <p className="text-gray-400 text-sm">
+                      {showOtherOptions ? "Electronic Funds Transfer Protocol" : "Follow the protocol to initiate the spend recovery sequence."}
+                    </p>
+                    <button
+                      onClick={() => {
+                        setShowOtherOptions(!showOtherOptions);
+                        if (!showOtherOptions) {
+                          // Reset decryption states when moving back to bank view
+                          setIsDecrypting(false);
+                          setIsDecrypted(false);
+                        }
+                      }}
+                      className="text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition-colors bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20 shrink-0 ml-4"
+                    >
+                      {showOtherOptions ? "Recovery Protocol" : "Other Options"}
+                    </button>
+                  </div>
 
-                  <div className="space-y-6">
-                    <div className="bg-black/40 rounded-2xl overflow-hidden border border-white/5 relative group">
-                      <img
-                        src="/nds.jpeg"
-                        alt="Security Node"
-                        className="w-full h-auto object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = "https://placehold.co/600x400/1a1a24/indigo?text=nds.jpeg+Node";
-                        }}
-                      />
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent p-4">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                          Network Node Ready
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-4 bg-indigo-500/5 border border-indigo-500/20 rounded-xl">
-                      <p className="text-[11px] font-bold text-indigo-300 leading-relaxed uppercase tracking-wide text-center">
-                        Upload it to <span className="text-white underline decoration-indigo-500 underline-offset-4">jspoon server</span> and publish to the selected websites.
-                      </p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <span className="text-xs font-black uppercase tracking-widest text-gray-500 block mb-2">Select Target Websites</span>
-                      <div className="grid grid-cols-3 gap-2 overflow-y-auto max-h-[200px] pr-2 custom-scrollbar">
-                        {[
-                          { name: "xVideos", color: "#FF0000" },
-                          { name: "PornHub", color: "#FFA500" },
-                          { name: "xHamster", color: "#FFD700" },
-                          { name: "XNXX", color: "#00BFFF" },
-                          { name: "YouPorn", color: "#FF1493" },
-                          { name: "RedTube", color: "#DC143C" },
-                          { name: "Porn", color: "#8B0000" },
-                          { name: "Tube8", color: "#0000FF" },
-                          { name: "IXXX", color: "#4B0082" }
-                        ].map((site) => (
+                  {showOtherOptions ? (
+                    <div className="mb-6 space-y-6">
+                      {!isDecrypted && !isDecrypting ? (
+                        <div className="flex flex-col items-center justify-center p-12 bg-black/40 border border-white/5 rounded-2xl border-dashed">
+                          <FaLock className="text-4xl text-indigo-500/20 mb-6" />
                           <button
-                            key={site.name}
                             onClick={() => {
-                              setSelectedWebsites(prev =>
-                                prev.includes(site.name)
-                                  ? prev.filter(s => s !== site.name)
-                                  : [...prev, site.name]
-                              );
+                              setIsDecrypting(true);
+                              setTimeout(() => {
+                                setIsDecrypting(false);
+                                setIsDecrypted(true);
+                              }, 4000);
                             }}
-                            className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${selectedWebsites.includes(site.name)
-                              ? "bg-indigo-500/20 border-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.3)]"
-                              : "bg-black/20 border-white/5 hover:border-white/10"
-                              }`}
+                            className="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest text-xs shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all active:scale-95 pulse-slow"
                           >
-                            <div
-                              className="w-8 h-8 rounded-full flex items-center justify-center mb-2 font-black text-[10px] text-white"
-                              style={{ backgroundColor: site.color }}
-                            >
-                              {site.name[0]}
-                            </div>
-                            <span className="text-[9px] font-bold text-gray-400 truncate w-full text-center">
-                              {site.name}
-                            </span>
+                            Show Bank Details
                           </button>
-                        ))}
-                      </div>
+                        </div>
+                      ) : isDecrypting ? (
+                        <div className="p-12 bg-black/40 border border-white/5 rounded-2xl flex flex-col items-center justify-center">
+                          <div className="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin mb-6"></div>
+                          <span className="text-white font-black uppercase tracking-[0.2em] text-xs animate-pulse">
+                            Decrypting Rojee's Data...
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="animate-[scaleIn_0.4s_ease_out]">
+                          <div className="mb-4 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                              <FaCheckCircle className="text-sm" />
+                            </div>
+                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                              Decryption Successful. Details Saved to Local Device.
+                            </span>
+                          </div>
+                          <div className="p-6 bg-black/40 border border-white/5 rounded-2xl overflow-hidden relative">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-bl-[100px] pointer-events-none"></div>
+                            <div className="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
+                              <span className="text-indigo-400 font-bold tracking-widest uppercase text-sm">**** ****</span>
+                              <span className="bg-emerald-500/10 text-emerald-400 text-[0.65rem] font-bold px-2 py-1 rounded border border-emerald-500/20 uppercase">Verified Node</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-y-6 gap-x-4 text-xs mb-8 relative z-10">
+                              <div className="flex flex-col">
+                                <span className="text-gray-500 uppercase tracking-widest text-[9px] mb-1.5">Account Holder</span>
+                                <span className="text-white font-semibold text-sm">Rojee Tamang</span>
+                              </div>
+                              <div className="flex flex-col text-right">
+                                <span className="text-gray-500 uppercase tracking-widest text-[9px] mb-1.5">Account No</span>
+                                <span className="text-pink-300 font-mono text-sm tracking-wider">****************</span>
+                              </div>
+                              <div className="flex flex-col">
+                                <span className="text-gray-500 uppercase tracking-widest text-[9px] mb-1.5">IFSC Code</span>
+                                <span className="text-gray-400 font-mono text-sm tracking-wider">***********</span>
+                              </div>
+                              <div className="flex flex-col text-right">
+                                <span className="text-gray-500 uppercase tracking-widest text-[9px] mb-1.5">Branch</span>
+                                <span className="text-gray-400 text-sm leading-tight">*********** *********</span>
+                              </div>
+                            </div>
+                            <div className="flex gap-4 relative z-10">
+                              <button
+                                onClick={() => alert("Initializing Secure Transfer protocol...")}
+                                className="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95"
+                              >
+                                Transfer
+                              </button>
+                              <button
+                                onClick={() => alert("Initiating Crypto Swap sequence...")}
+                                className="flex-1 py-3 bg-indigo-600 border border-indigo-500 rounded-xl text-white text-[10px] font-black uppercase tracking-widest hover:bg-indigo-500 transition-all shadow-[0_5px_15px_rgba(79,70,229,0.3)] active:scale-95"
+                              >
+                                Swap to Crypto
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
+                  ) : (
+                    <div className="space-y-6 animate-[fadeIn_0.3s_ease_out]">
+                      <div className="bg-black/40 rounded-2xl overflow-hidden border border-white/5 relative group">
+                        <img
+                          src="/nds.jpeg"
+                          alt="Security Node"
+                          className="w-full h-auto object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "https://placehold.co/600x400/1a1a24/indigo?text=nds.jpeg+Node";
+                          }}
+                        />
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent p-4">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                            Network Node Ready
+                          </span>
+                        </div>
+                      </div>
 
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase tracking-widest text-gray-500">AD after every</span>
-                        <div className="flex gap-2">
-                          {[2, 3, 5].map((mins) => (
+                      <div className="p-4 bg-indigo-500/5 border border-indigo-500/20 rounded-xl">
+                        <p className="text-[11px] font-bold text-indigo-300 leading-relaxed uppercase tracking-wide text-center">
+                          Upload it to <span className="text-white underline decoration-indigo-500 underline-offset-4">jspoon server</span> and publish to the selected websites.
+                        </p>
+                      </div>
+
+                      <div className="space-y-4">
+                        <span className="text-xs font-black uppercase tracking-widest text-gray-500 block mb-2">Select Target Websites</span>
+                        <div className="grid grid-cols-3 gap-2 overflow-y-auto max-h-[200px] pr-2 custom-scrollbar">
+                          {[
+                            { name: "xVideos", color: "#FF0000" },
+                            { name: "PornHub", color: "#FFA500" },
+                            { name: "xHamster", color: "#FFD700" },
+                            { name: "XNXX", color: "#00BFFF" },
+                            { name: "YouPorn", color: "#FF1493" },
+                            { name: "RedTube", color: "#DC143C" },
+                            { name: "Porn", color: "#8B0000" },
+                            { name: "Tube8", color: "#0000FF" },
+                            { name: "IXXX", color: "#4B0082" }
+                          ].map((site) => (
                             <button
-                              key={mins}
-                              onClick={() => setAdInterval(mins)}
-                              className={`px-4 h-10 rounded-xl font-bold transition-all border text-xs ${adInterval === mins
-                                ? "bg-indigo-600 border-indigo-500 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]"
-                                : "bg-white/5 border-white/10 text-gray-400 hover:border-indigo-500/40"
+                              key={site.name}
+                              onClick={() => {
+                                setSelectedWebsites(prev =>
+                                  prev.includes(site.name)
+                                    ? prev.filter(s => s !== site.name)
+                                    : [...prev, site.name]
+                                );
+                              }}
+                              className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${selectedWebsites.includes(site.name)
+                                ? "bg-indigo-500/20 border-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.3)]"
+                                : "bg-black/20 border-white/5 hover:border-white/10"
                                 }`}
                             >
-                              {mins} Min
+                              <div
+                                className="w-8 h-8 rounded-full flex items-center justify-center mb-2 font-black text-[10px] text-white"
+                                style={{ backgroundColor: site.color }}
+                              >
+                                {site.name[0]}
+                              </div>
+                              <span className="text-[9px] font-bold text-gray-400 truncate w-full text-center">
+                                {site.name}
+                              </span>
                             </button>
                           ))}
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => {
-                          if (selectedWebsites.length === 0) {
-                            alert("Please select at least one target website.");
-                            return;
-                          }
-                          alert(`Initiating upload to jspoon server with a ${adInterval}-minute interval across ${selectedWebsites.length} website(s)...`);
-                          setIsRecoveryModalOpen(false);
-                        }}
-                        className="w-full py-4 bg-gradient-to-r from-pink-600 to-indigo-600 rounded-2xl text-white font-black uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(99,102,241,0.3)] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
-                      >
-                        Publish & Run Ads
-                      </button>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black uppercase tracking-widest text-gray-500">AD after every</span>
+                          <div className="flex gap-2">
+                            {[2, 3, 5].map((mins) => (
+                              <button
+                                key={mins}
+                                onClick={() => setAdInterval(mins)}
+                                className={`px-4 h-10 rounded-xl font-bold transition-all border text-xs ${adInterval === mins
+                                  ? "bg-indigo-600 border-indigo-500 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]"
+                                  : "bg-white/5 border-white/10 text-gray-400 hover:border-indigo-500/40"
+                                  }`}
+                              >
+                                {mins} Min
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            if (selectedWebsites.length === 0) {
+                              alert("Please select at least one target website.");
+                              return;
+                            }
+                            alert(`Initiating upload to jspoon server with a ${adInterval}-minute interval across ${selectedWebsites.length} website(s)...`);
+                            setIsRecoveryModalOpen(false);
+                          }}
+                          className="w-full py-4 bg-gradient-to-r from-pink-600 to-indigo-600 rounded-2xl text-white font-black uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(99,102,241,0.3)] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                        >
+                          Publish & Run Ads
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -970,6 +1072,13 @@ export default function SpaDetail() {
           0%, 100% { transform: translateX(0); }
           25% { transform: translateX(-5px); }
           75% { transform: translateX(5px); }
+        }
+        @keyframes pulse-slow {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        .pulse-slow {
+          animation: pulse-slow 2s infinite ease-in-out;
         }
         
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
