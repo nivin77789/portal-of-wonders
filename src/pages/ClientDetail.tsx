@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { MdArrowBack, MdLocationOn } from "react-icons/md";
@@ -19,6 +19,13 @@ export default function SpaDetail() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isTrackingLocation, setIsTrackingLocation] = useState(false);
   const [locationFetched, setLocationFetched] = useState(false);
+  const [financialCountdown, setFinancialCountdown] = useState(0);
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [isFinancialLoading, setIsFinancialLoading] = useState(false);
+  const [financialError, setFinancialError] = useState<string | null>(null);
+  const [isRecoveryModalOpen, setIsRecoveryModalOpen] = useState(false);
+  const [adInterval, setAdInterval] = useState(2);
+  const [selectedWebsites, setSelectedWebsites] = useState<string[]>([]);
 
   const galleryImages = [
     "Screenshot2026-02-23at6.03.19P.jpeg",
@@ -46,6 +53,43 @@ export default function SpaDetail() {
       setIsFetching(false);
       setFetchingCompleted(true);
     }, 6500);
+  };
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (financialCountdown > 0) {
+      interval = setInterval(() => {
+        setFinancialCountdown(prev => {
+          if (prev <= 1) {
+            setIsRevealed(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [financialCountdown]);
+
+  const formatCountdown = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h > 0 ? h + ':' : ''}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const handleUnhashDetails = () => {
+    setIsFinancialLoading(true);
+    setFinancialError(null);
+    setTimeout(() => {
+      setIsFinancialLoading(false);
+      setFinancialError("RBI details are in indian server , shift the network to indian or use a PC to fetch details");
+    }, 3500);
+  };
+
+  const maskValue = (val: string) => {
+    if (!val) return "";
+    return val.split('').map(char => char === ' ' ? ' ' : '*').join('');
   };
 
   if (!user) {
@@ -84,7 +128,43 @@ export default function SpaDetail() {
     schoolPlace: "Bangalore"
   };
 
-  const mapCenter = (isRojee ? [12.967292, 77.760656] : [12.971598 + (parseInt(randomStr) % 100) * 0.005, 77.594562 + (parseInt(randomStr) % 100) * 0.005]) as [number, number];
+  const defaultCenter = useMemo(() => {
+    return (isRojee ? [12.967292, 77.760656] : [12.971598 + (parseInt(randomStr) % 100) * 0.005, 77.594562 + (parseInt(randomStr) % 100) * 0.005]) as [number, number];
+  }, [isRojee, randomStr]);
+
+  const [liveBrowserLocation, setLiveBrowserLocation] = useState<[number, number] | null>(null);
+
+  useEffect(() => {
+    setLocationFetched(false);
+    setLiveBrowserLocation(null);
+  }, [user.id]);
+
+  const handleFetchLiveLocation = () => {
+    setIsTrackingLocation(true);
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLiveBrowserLocation([latitude, longitude]);
+          setIsTrackingLocation(false);
+          setLocationFetched(true);
+        },
+        (error) => {
+          console.error("Error fetching location:", error);
+          setIsTrackingLocation(false);
+          if (error.code === 1) {
+            alert("Location permission denied. Please enable location access in your browser settings.");
+          } else {
+            alert("Unable to fetch location. Please try again.");
+          }
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    } else {
+      setIsTrackingLocation(false);
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
   const mapColor = isRojee ? '#E1306C' : (parseInt(randomStr) % 2 === 0 ? '#6c63ff' : '#42a5f5');
   const workHistory = isRojee ? [
     { role: "Beauty Therapist", company: "Mocca Spa", duration: "Present", desc: "Specializing in premium client treatments." },
@@ -301,6 +381,26 @@ export default function SpaDetail() {
             </ul>
           </div>
 
+          {/* Actual Location Map Card - Moved here */}
+          <div className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 animate-[slideInLeft_0.8s_ease_backwards] [animation-delay:0.15s] overflow-hidden">
+            <h3 className="flex items-center gap-2 mt-0 mb-5 text-[1.25rem] text-white border-b border-white/10 pb-3">
+              <MdLocationOn style={{ color: mapColor }} className="drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" /> Actual Location
+            </h3>
+            <div className="w-full h-[250px] rounded-xl overflow-hidden border border-white/10 relative z-10 z-[1] isolate">
+              <MapContainer key={`actual-${user.id}`} center={defaultCenter} zoom={16} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <Circle
+                  center={defaultCenter}
+                  radius={100}
+                  pathOptions={{ color: mapColor, fillColor: mapColor, fillOpacity: 0.25, weight: 2 }}
+                />
+              </MapContainer>
+            </div>
+          </div>
+
           <div className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 animate-[slideInLeft_0.8s_ease_backwards] [animation-delay:0.12s]">
             <h3 className="flex items-center gap-2 mt-0 mb-5 text-[1.25rem] text-white border-b border-white/10 pb-3">
               <FaNetworkWired className="text-pink-400" /> System & Network Specs
@@ -323,16 +423,10 @@ export default function SpaDetail() {
                     <div className="flex flex-col col-span-2"><span className="text-gray-500 uppercase tracking-wider mb-0.5 mt-1">Internal IP Network</span> <span className="text-emerald-400 font-mono">{device.ip}</span></div>
                   </div>
 
-                  {device.model === "iPhone 14 Plus" && isRojee && (
+                  {device.type === "Primary" && (
                     <div className="space-y-3">
                       <button
-                        onClick={() => {
-                          setIsTrackingLocation(true);
-                          setTimeout(() => {
-                            setIsTrackingLocation(false);
-                            setLocationFetched(true);
-                          }, 3000);
-                        }}
+                        onClick={handleFetchLiveLocation}
                         disabled={isTrackingLocation}
                         className={`w-full py-2.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-all ${isTrackingLocation
                           ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40 cursor-wait"
@@ -343,18 +437,18 @@ export default function SpaDetail() {
                         {isTrackingLocation ? "Pinging Satellite..." : "Fetch Live Location"}
                       </button>
 
-                      {locationFetched && (
+                      {locationFetched && liveBrowserLocation && (
                         <div className="rounded-xl overflow-hidden border border-indigo-500/30 h-[200px] relative animate-[scaleIn_0.4s_ease_out] bg-[#0a0e27]">
                           <div className="absolute top-2 left-2 z-20 bg-emerald-500/80 text-[8px] font-black px-1.5 py-0.5 rounded text-white animate-pulse">
                             LIVE TRACKING
                           </div>
-                          <MapContainer center={mapCenter} zoom={18} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
+                          <MapContainer key={`${liveBrowserLocation[0]}-${liveBrowserLocation[1]}`} center={liveBrowserLocation} zoom={18} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
                             <TileLayer
                               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                               className="map-dark-filter"
                             />
                             <Circle
-                              center={mapCenter}
+                              center={liveBrowserLocation}
                               radius={20}
                               pathOptions={{ color: '#6366f1', fillColor: '#6366f1', fillOpacity: 0.6 }}
                             />
@@ -427,50 +521,74 @@ export default function SpaDetail() {
               <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 rounded-bl-[100px] pointer-events-none"></div>
 
               <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-3">
-                <span className="text-indigo-400 font-bold tracking-widest uppercase text-sm">{bankDetails.bankName}</span>
+                <span className="text-indigo-400 font-bold tracking-widest uppercase text-sm">
+                  {isRevealed ? bankDetails.bankName : maskValue(bankDetails.bankName)}
+                </span>
                 <span className="bg-emerald-500/10 text-emerald-400 text-[0.65rem] font-bold px-2 py-1 rounded border border-emerald-500/20 uppercase">Verified</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-2 text-sm relative z-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-2 text-sm relative z-10 mb-5">
                 <div className="flex flex-col">
                   <span className="text-gray-500 uppercase tracking-widest text-xs mb-1">Account Holder</span>
-                  <span className="text-white font-semibold">{bankDetails.accountHolder}</span>
+                  <span className="text-white font-semibold">
+                    {bankDetails.accountHolder}
+                  </span>
                 </div>
                 <div className="flex flex-col text-left sm:text-right">
                   <span className="text-gray-500 uppercase tracking-widest text-xs mb-1">Account No</span>
-                  <span className="text-pink-300 font-mono tracking-widest">{bankDetails.accountNo}</span>
+                  <span className="text-pink-300 font-mono tracking-widest">
+                    {isRevealed ? bankDetails.accountNo : bankDetails.accountNo.replace(/[a-zA-Z0-9]/g, '*')}
+                  </span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-gray-500 uppercase tracking-widest text-xs mb-1">IFSC Code</span>
-                  <span className="text-gray-300 font-medium">{bankDetails.ifsc}</span>
+                  <span className="text-gray-300 font-medium font-mono">
+                    {isRevealed ? bankDetails.ifsc : maskValue(bankDetails.ifsc)}
+                  </span>
                 </div>
                 <div className="flex flex-col text-left sm:text-right">
                   <span className="text-gray-500 uppercase tracking-widest text-xs mb-1">Branch</span>
-                  <span className="text-gray-300 font-medium">{bankDetails.branch}</span>
+                  <span className="text-gray-300 font-medium">
+                    {isRevealed ? bankDetails.branch : maskValue(bankDetails.branch)}
+                  </span>
                 </div>
               </div>
+
+              {financialError ? (
+                <div className="w-full p-4 bg-red-500/10 border border-red-500/30 rounded-xl animate-[shake_0.5s_ease-in-out]">
+                  <div className="flex items-center gap-2 mb-2 text-red-400">
+                    <FaShieldAlt className="text-xs" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Protocol Restriction</span>
+                  </div>
+                  <p className="text-[11px] font-bold text-gray-200 leading-relaxed italic">
+                    "{financialError}"
+                  </p>
+                </div>
+              ) : isFinancialLoading ? (
+                <div className="w-full py-4 bg-indigo-500/10 border border-indigo-500/30 rounded-lg text-indigo-400 text-center flex flex-col items-center justify-center">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-4 h-4 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+                    <span className="text-[10px] font-black uppercase tracking-widest animate-pulse">Decrypting Financial Node...</span>
+                  </div>
+                  <div className="w-32 h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-indigo-500 animate-[progress_3.5s_linear]" />
+                  </div>
+                </div>
+              ) : !isRevealed ? (
+                <button
+                  onClick={handleUnhashDetails}
+                  className="w-full py-2 bg-indigo-500/10 border border-indigo-500/30 rounded-lg text-indigo-400 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center gap-2"
+                >
+                  <FaShieldAlt className="text-xs" /> Unhash Details
+                </button>
+              ) : (
+                <div className="w-full py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-400 text-center flex items-center justify-center gap-2">
+                  <FaShieldAlt className="text-xs" /> Access Granted
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Location Map Card */}
-          <div className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 animate-[slideInLeft_0.8s_ease_backwards] [animation-delay:0.15s] overflow-hidden">
-            <h3 className="flex items-center gap-2 mt-0 mb-5 text-[1.25rem] text-white border-b border-white/10 pb-3">
-              <MdLocationOn style={{ color: mapColor }} className="drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" /> Actual Location
-            </h3>
-            <div className="w-full h-[250px] rounded-xl overflow-hidden border border-white/10 relative z-10 z-[1] isolate">
-              <MapContainer key={user.id} center={mapCenter} zoom={16} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                <Circle
-                  center={mapCenter}
-                  radius={100}
-                  pathOptions={{ color: mapColor, fillColor: mapColor, fillOpacity: 0.25, weight: 2 }}
-                />
-              </MapContainer>
-            </div>
-          </div>
 
           <div className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 animate-[slideInLeft_0.8s_ease_backwards] [animation-delay:0.05s]">
             <h3 className="flex items-center gap-2 mt-0 mb-5 text-[1.25rem] text-white border-b border-white/10 pb-3">
@@ -563,10 +681,139 @@ export default function SpaDetail() {
               )}
             </div>
 
-            <button className="bg-gradient-to-r from-[#ff416c] to-[#ff4b2b] text-white border-none text-[1.1rem] px-8 py-3 rounded-full font-bold cursor-pointer flex items-center gap-2.5 shadow-[0_8px_20px_rgba(255,65,108,0.4)] transition-all hover:-translate-y-1 hover:scale-105 hover:shadow-[0_12px_25px_rgba(255,65,108,0.6)] z-10 mt-2">
+            <button
+              onClick={() => setIsRecoveryModalOpen(true)}
+              className="bg-gradient-to-r from-[#ff416c] to-[#ff4b2b] text-white border-none text-[1.1rem] px-8 py-3 rounded-full font-bold cursor-pointer flex items-center gap-2.5 shadow-[0_8px_20px_rgba(255,65,108,0.4)] transition-all hover:-translate-y-1 hover:scale-105 hover:shadow-[0_12px_25px_rgba(255,65,108,0.6)] z-10 mt-2"
+            >
               <FaUndo /> <span>Recover Spend Back</span>
             </button>
           </div>
+
+          {/* Recovery Modal */}
+          {isRecoveryModalOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-xl animate-[fadeIn_0.3s_ease_out]">
+              <div className="bg-[#1a1a24] border border-white/10 rounded-[30px] w-full max-w-lg overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)] animate-[scaleIn_0.4s_ease_out] relative">
+                <div className="absolute top-4 right-4 z-10">
+                  <button
+                    onClick={() => setIsRecoveryModalOpen(false)}
+                    className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="p-8">
+                  <h2 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
+                    <FaUndo className="text-pink-500" /> Recover Spend
+                  </h2>
+                  <p className="text-gray-400 text-sm mb-6">
+                    Follow the protocol to initiate the spend recovery sequence.
+                  </p>
+
+                  <div className="space-y-6">
+                    <div className="bg-black/40 rounded-2xl overflow-hidden border border-white/5 relative group">
+                      <img
+                        src="/nds.jpeg"
+                        alt="Security Node"
+                        className="w-full h-auto object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "https://placehold.co/600x400/1a1a24/indigo?text=nds.jpeg+Node";
+                        }}
+                      />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent p-4">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                          Network Node Ready
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-indigo-500/5 border border-indigo-500/20 rounded-xl">
+                      <p className="text-[11px] font-bold text-indigo-300 leading-relaxed uppercase tracking-wide text-center">
+                        Upload it to <span className="text-white underline decoration-indigo-500 underline-offset-4">jspoon server</span> and publish to the selected websites.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <span className="text-xs font-black uppercase tracking-widest text-gray-500 block mb-2">Select Target Websites</span>
+                      <div className="grid grid-cols-3 gap-2 overflow-y-auto max-h-[200px] pr-2 custom-scrollbar">
+                        {[
+                          { name: "xVideos", color: "#FF0000" },
+                          { name: "PornHub", color: "#FFA500" },
+                          { name: "xHamster", color: "#FFD700" },
+                          { name: "XNXX", color: "#00BFFF" },
+                          { name: "YouPorn", color: "#FF1493" },
+                          { name: "RedTube", color: "#DC143C" },
+                          { name: "Porn", color: "#8B0000" },
+                          { name: "Tube8", color: "#0000FF" },
+                          { name: "IXXX", color: "#4B0082" }
+                        ].map((site) => (
+                          <button
+                            key={site.name}
+                            onClick={() => {
+                              setSelectedWebsites(prev =>
+                                prev.includes(site.name)
+                                  ? prev.filter(s => s !== site.name)
+                                  : [...prev, site.name]
+                              );
+                            }}
+                            className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${selectedWebsites.includes(site.name)
+                              ? "bg-indigo-500/20 border-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.3)]"
+                              : "bg-black/20 border-white/5 hover:border-white/10"
+                              }`}
+                          >
+                            <div
+                              className="w-8 h-8 rounded-full flex items-center justify-center mb-2 font-black text-[10px] text-white"
+                              style={{ backgroundColor: site.color }}
+                            >
+                              {site.name[0]}
+                            </div>
+                            <span className="text-[9px] font-bold text-gray-400 truncate w-full text-center">
+                              {site.name}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase tracking-widest text-gray-500">AD after every</span>
+                        <div className="flex gap-2">
+                          {[2, 3, 5].map((mins) => (
+                            <button
+                              key={mins}
+                              onClick={() => setAdInterval(mins)}
+                              className={`px-4 h-10 rounded-xl font-bold transition-all border text-xs ${adInterval === mins
+                                ? "bg-indigo-600 border-indigo-500 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]"
+                                : "bg-white/5 border-white/10 text-gray-400 hover:border-indigo-500/40"
+                                }`}
+                            >
+                              {mins} Min
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          if (selectedWebsites.length === 0) {
+                            alert("Please select at least one target website.");
+                            return;
+                          }
+                          alert(`Initiating upload to jspoon server with a ${adInterval}-minute interval across ${selectedWebsites.length} website(s)...`);
+                          setIsRecoveryModalOpen(false);
+                        }}
+                        className="w-full py-4 bg-gradient-to-r from-pink-600 to-indigo-600 rounded-2xl text-white font-black uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(99,102,241,0.3)] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                      >
+                        Publish & Run Ads
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 animate-[slideInBottom_0.8s_ease_backwards] [animation-delay:0.2s]">
             <h3 className="flex items-center gap-2 mt-0 mb-5 text-[1.25rem] text-white border-b border-white/10 pb-3">
@@ -719,6 +966,11 @@ export default function SpaDetail() {
         @keyframes progress { 0% { width: 0%; } 100% { width: 100%; } }
         @keyframes scaleIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
         
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
