@@ -165,10 +165,10 @@ const Chat = () => {
         // Custom check for Rojee
         if (userInput.includes("rojee") || userInput.includes("who is rojee")) {
             setTimeout(() => {
-                const rojeeDetails = "Rojee Tamang is a 27-year-old (Born: Feb 22, 1998) professional Beauty Therapist currently working at Mocca Spa in Bangalore.\n\n" +
+                const rojeeDetails = "Rojee Tamang is a 28-year-old (Born: Feb 22, 1998) professional Therapist currently working at VRS Spa & Saloon in Bangalore.\n\n" +
                     "**Professional Details:**\n" +
-                    "• **Current Role**: Beauty Therapist at Mocca Spa.\n" +
-                    "• **History**: Previously Senior Therapist at O3 Spa and Junior Massuse at Ozone Wellness (2019-2021).\n" +
+                    "• **Current Role**: Therapist at VRS Spa & Saloon (Marathahalli Branch).\n" +
+                    "• **History**: Previously Therapist at Mocca Unisex Spa (Borewell Rd), O3 Unisex Spa and Salon (Palm Meadows), and Ozone unisex salon and spa (Doddakannelli).\n" +
                     "• **Education**: Graduate from Government Senior Secondary School, Jorethang (Sikkim), class of 2020.\n\n" +
                     "**Contact & Socials:**\n" +
                     "• **Instagram**: @ro_se.__22\n" +

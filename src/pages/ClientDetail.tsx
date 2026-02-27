@@ -31,6 +31,12 @@ export default function SpaDetail() {
   const [isDecrypted, setIsDecrypted] = useState(false);
   const [isPrivateDataModalOpen, setIsPrivateDataModalOpen] = useState(false);
   const [isPrivateDataLoading, setIsPrivateDataLoading] = useState(false);
+  const [isRaidModalOpen, setIsRaidModalOpen] = useState(false);
+  const [isRaidLoading, setIsRaidLoading] = useState(false);
+  const [raidStep, setRaidStep] = useState(0); // 0: Details, 1: Loading, 2: Final
+  const [selectedSpaForRaid, setSelectedSpaForRaid] = useState<any>(null);
+  const [isAnonymous, setIsAnonymous] = useState(true);
+  const [sendToNews9, setSendToNews9] = useState(false);
 
   const galleryImages = [
     "Screenshot2026-02-23at6.03.19P.jpeg",
@@ -171,14 +177,46 @@ export default function SpaDetail() {
     }
   };
   const mapColor = isRojee ? '#E1306C' : (parseInt(randomStr) % 2 === 0 ? '#6c63ff' : '#42a5f5');
-  const workHistory = isRojee ? [
-    { role: "Beauty Therapist", company: "VRS spa", duration: "Present", desc: "Specializing in premium client treatments." },
-    { role: "Senior Therapist", company: "Mocca Spa", duration: "Previous", desc: "Specializing in premium client treatments." },
-    { role: "Senior Therapist", company: "O3 Spa", duration: "2021 - 2023", desc: "Advanced therapies and client management." }
+  const workHistory = user.experience || (isRojee ? [
+    {
+      role: "Therapist",
+      company: "VRS Spa & Saloon",
+      duration: "Present",
+      desc: "1st floor, 1st Cross Rd, near kanti sweets, Aswath Nagar, Marathahalli, Bengaluru 560037",
+      phone: "+917975918435",
+      directionUrl: "https://www.google.com/maps/search/?api=1&query=VRS+spa+%26+saloon+Marathahalli",
+      legalDetails: "Registered under Karnataka Shops and Commercial Establishments Act. Trade License: BBMP/WZ/2024/7748. Status: Active."
+    },
+    {
+      role: "Therapist",
+      company: "Mocca Unisex Spa (Borewell Rd)",
+      duration: "Previous",
+      desc: "ground floor, 43/2 6th cross, Borewell Rd, Bengaluru 560066",
+      phone: "+917019694470",
+      directionUrl: "https://www.google.com/maps/search/?api=1&query=Mocca+Unisex+Spa+Borewell+Rd+Bengaluru",
+      legalDetails: "Health License No: HL/2022/992. Professional Tax Registered. Status: Operational."
+    },
+    {
+      role: "Therapist",
+      company: "O3 Unisex Spa and Salon",
+      duration: "Previous",
+      desc: "34, Borewell Rd, Palm Meadows, Nallurhalli, Whitefield, Bengaluru 560066",
+      phone: "+919148077866",
+      directionUrl: "https://www.google.com/maps/search/?api=1&query=O3+Unisex+Spa+Palm+Meadows+Whitefield",
+      legalDetails: "GSTIN: 29AABCX1234F1Z5. Fire Safety Clearance: DFS/BNG/2023. Status: Operational."
+    },
+    {
+      role: "Therapist",
+      company: "Ozone unisex salon and spa",
+      duration: "Previous",
+      desc: "1st floor Shop No 3, Near Gear School Rd, Doddakannelli, Bengaluru 560035",
+      directionUrl: "https://www.google.com/maps/search/?api=1&query=Ozone+unisex+salon+and+spa+Doddakannelli",
+      legalDetails: "Branch Establishment Certificate: BEC/2021/44. Status: Closed/Inactive."
+    }
   ] : [
     { role: "Therapist", company: `${user.spa} Spa`, duration: "Present", desc: "General client therapies and consulting." },
     { role: "Junior Staff", company: "Urban Wellness", duration: "Previous", desc: "Basic treatments and support." }
-  ];
+  ]);
 
   const deviceSpecs = isRojee ? [
     {
@@ -632,9 +670,52 @@ export default function SpaDetail() {
                 <div key={idx} className="flex gap-4 relative">
                   <div className="w-4 h-4 rounded-full bg-indigo-500 border-3 border-[#1a1a24] relative z-10 shrink-0 mt-1"></div>
                   <div className="flex-grow">
-                    <h4 className="m-0 mb-1 text-white text-base">{job.role}</h4>
-                    <div className="text-[0.8rem] text-pink-300 mb-2 font-medium">{job.company} | {job.duration}</div>
-                    <p className="text-[0.85rem] text-gray-400 m-0 leading-relaxed">{job.desc}</p>
+                    <h4 className="m-0 mb-1 text-white text-base font-black tracking-tight">{job.role}</h4>
+                    <div className="text-[0.8rem] text-indigo-400 mb-2 font-black uppercase tracking-widest">{job.company} | {job.duration}</div>
+                    {job.desc && <p className="text-[0.85rem] text-gray-400 m-0 mb-4 leading-relaxed italic border-l-2 border-white/10 pl-3">{job.desc}</p>}
+
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {job.phone && (
+                        <a
+                          href={`tel:${job.phone}`}
+                          title="Call"
+                          className="w-8 h-8 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-lg flex items-center justify-center transition-all hover:bg-emerald-500 hover:text-white"
+                        >
+                          <FaPhoneAlt className="text-[12px]" />
+                        </a>
+                      )}
+                      {job.directionUrl && (
+                        <a
+                          href={job.directionUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          title="Directions"
+                          className="w-8 h-8 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-lg flex items-center justify-center transition-all hover:bg-blue-500 hover:text-white"
+                        >
+                          <MdLocationOn className="text-[16px]" />
+                        </a>
+                      )}
+                      {job.legalDetails && (
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            onClick={() => alert(`LEGAL VERIFICATION: ${job.company}\n\n${job.legalDetails}`)}
+                            className="px-3 py-1.5 bg-pink-500/10 border border-pink-500/30 text-pink-400 text-[10px] font-black rounded-lg uppercase tracking-widest flex items-center gap-1.5 transition-all hover:bg-pink-500 hover:text-white"
+                          >
+                            <FaShieldAlt className="text-[9px]" /> Legal Details
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedSpaForRaid(job);
+                              setIsRaidModalOpen(true);
+                              setRaidStep(0);
+                            }}
+                            className="px-3 py-1.5 bg-red-500/10 border border-red-500/30 text-red-500 text-[10px] font-black rounded-lg uppercase tracking-widest flex items-center gap-1.5 transition-all hover:bg-red-600 hover:text-white group"
+                          >
+                            <FaExclamationTriangle className="text-[9px] group-hover:animate-pulse" /> Report a Raid
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -936,7 +1017,165 @@ export default function SpaDetail() {
             </div>
           )}
 
-          {/* Private Data Modal */}
+          {/* Raid Modal */}
+          {isRaidModalOpen && (
+            <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 bg-black/95 backdrop-blur-3xl animate-[fadeIn_0.3s_ease_out]">
+              <div className="bg-[#0f0a0a] border border-red-500/20 rounded-[40px] w-full max-w-lg overflow-hidden shadow-[0_0_80px_rgba(220,38,38,0.2)] animate-[scaleIn_0.4s_ease_out] relative">
+
+                <div className="absolute top-6 right-6 z-10">
+                  <button
+                    onClick={() => setIsRaidModalOpen(false)}
+                    className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-red-500 transition-all"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="p-8">
+                  {raidStep === 0 && (
+                    <div className="animate-[fadeIn_0.5s_ease_out]">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 bg-red-600/20 rounded-2xl flex items-center justify-center text-red-500 border border-red-500/30">
+                          <FaExclamationTriangle className="text-xl animate-pulse" />
+                        </div>
+                        <div>
+                          <h2 className="text-xl font-black text-white uppercase tracking-tighter">Raid Intelligence</h2>
+                          <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest leading-none">Protocol: Evidence Submission</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4 mb-8">
+                        <div className="p-4 bg-white/5 border border-white/10 rounded-2xl">
+                          <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest block mb-1">Target Node</span>
+                          <span className="text-white font-bold">{selectedSpaForRaid?.company}</span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="p-4 bg-white/5 border border-white/10 rounded-2xl">
+                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">Commisioner Office</span>
+                            <span className="text-[11px] text-white font-bold leading-tight block">B. Dayananda, IPS<br />CP Bengaluru City</span>
+                          </div>
+                          <div className="p-4 bg-white/5 border border-white/10 rounded-2xl">
+                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">Nearby Station</span>
+                            <span className="text-[11px] text-white font-bold">{selectedSpaForRaid?.company.includes("Marathahalli") ? "Marathahalli PS" : "Whitefield PS"}</span>
+                          </div>
+                        </div>
+
+                        <div className="p-4 bg-red-600/10 border border-red-500/20 rounded-2xl">
+                          <span className="text-[9px] font-black text-red-400 uppercase tracking-widest block mb-1">Alleged Offences</span>
+                          <ul className="list-none p-0 m-0 space-y-1">
+                            <li className="text-[11px] text-gray-300 flex items-center gap-2 font-medium">• Illegal Sexual Activities (ITP Act)</li>
+                            <li className="text-[11px] text-gray-300 flex items-center gap-2 font-medium">• Operating without Health License</li>
+                            <li className="text-[11px] text-gray-300 flex items-center gap-2 font-medium">• Labor Law Violations</li>
+                          </ul>
+                        </div>
+
+                        <div className="space-y-2">
+                          <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest block">Evidence Packages</span>
+                          <div className="flex gap-2">
+                            <div className="flex-1 p-2 bg-black/40 border border-white/10 rounded-lg flex items-center gap-2">
+                              <FaLock className="text-[10px] text-indigo-400" />
+                              <span className="text-[10px] text-gray-300 truncate">evidence_01.mp4</span>
+                            </div>
+                            <div className="flex-1 p-2 bg-black/40 border border-white/10 rounded-lg flex items-center gap-2">
+                              <FaLock className="text-[10px] text-indigo-400" />
+                              <span className="text-[10px] text-gray-300 truncate">staff_details.json</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-4">
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative">
+                            <input
+                              type="checkbox"
+                              checked={isAnonymous}
+                              onChange={(e) => setIsAnonymous(e.target.checked)}
+                              className="sr-only"
+                            />
+                            <div className={`w-10 h-5 rounded-full transition-colors ${isAnonymous ? 'bg-emerald-600' : 'bg-white/10'}`}></div>
+                            <div className={`absolute top-1 left-1 w-3 h-3 bg-white rounded-full transition-transform ${isAnonymous ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                          </div>
+                          <span className="text-[11px] font-black uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors underline decoration-white/10 underline-offset-4">Sent Raid Anonymously</span>
+                        </label>
+
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative">
+                            <input
+                              type="checkbox"
+                              checked={sendToNews9}
+                              onChange={(e) => setSendToNews9(e.target.checked)}
+                              className="sr-only"
+                            />
+                            <div className={`w-10 h-5 rounded-full transition-colors ${sendToNews9 ? 'bg-orange-600' : 'bg-white/10'}`}></div>
+                            <div className={`absolute top-1 left-1 w-3 h-3 bg-white rounded-full transition-transform ${sendToNews9 ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                          </div>
+                          <span className="text-[11px] font-black uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors underline decoration-white/10 underline-offset-4">Send Copy to NEWS9 Kannada</span>
+                        </label>
+
+                        <button
+                          onClick={() => {
+                            setRaidStep(1);
+                            setTimeout(() => setRaidStep(2), 5000);
+                          }}
+                          className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-[0.2em] text-xs rounded-2xl shadow-[0_10px_30px_rgba(220,38,38,0.3)] transition-all active:scale-95"
+                        >
+                          Proceed and Sent Raid
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {raidStep === 1 && (
+                    <div className="p-10 flex flex-col items-center justify-center text-center">
+                      <div className="relative w-24 h-24 mb-6">
+                        <div className="absolute inset-0 border-4 border-red-600/20 rounded-full"></div>
+                        <div className="absolute inset-0 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <FaNetworkWired className="text-2xl text-red-500 animate-pulse" />
+                        </div>
+                      </div>
+                      <h3 className="text-white font-black uppercase tracking-[0.4em] text-sm mb-2">Broadcasting Raid</h3>
+                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-6 leading-tight">
+                        Syncing with Commissioner Office,<br />
+                        Police Stations {sendToNews9 ? "& NEWS9 Kannada" : "& News Channels"}
+                      </p>
+                      <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-full bg-red-600 animate-[progress_5s_linear]"></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {raidStep === 2 && (
+                    <div className="py-6 text-center animate-[fadeIn_0.5s_ease_out]">
+                      <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
+                        <FaCheckCircle className="text-4xl text-emerald-500" />
+                      </div>
+                      <h3 className="text-white text-xl font-black uppercase tracking-widest mb-4">Transmission Successful</h3>
+                      <div className="p-6 bg-black/40 border border-emerald-500/20 rounded-3xl mb-8">
+                        <p className="text-gray-300 text-sm leading-relaxed font-bold uppercase tracking-tight">
+                          The Raid Command has been broadcasted to the <span className="text-emerald-400 font-black">Bangalore Commissioner Council</span>.
+                        </p>
+                        <div className="h-[1px] bg-white/5 my-4"></div>
+                        <p className="text-rose-400 text-[11px] font-black uppercase tracking-widest animate-pulse">
+                          Access Denied: Use Local PC to track squad movements.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setIsRaidModalOpen(false)}
+                        className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black uppercase tracking-widest text-xs hover:bg-white/10 transition-all"
+                      >
+                        Acknowledge
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Private Data Modal tobacco */}
           {isPrivateDataModalOpen && (
             <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-2xl animate-[fadeIn_0.3s_ease_out]">
               <div className={`bg-[#0f0f15] border border-white/10 rounded-[40px] w-full ${isPrivateDataLoading ? "max-w-xl" : "max-w-md"} overflow-hidden shadow-[0_0_80px_rgba(79,70,229,0.2)] animate-[scaleIn_0.4s_ease_out] relative transition-all duration-500`}>

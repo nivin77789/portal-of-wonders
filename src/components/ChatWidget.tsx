@@ -140,7 +140,7 @@ export const ChatWidget = () => {
         // Custom check for Rojee
         if (userInput.includes("rojee") || userInput.includes("who is rojee")) {
             setTimeout(() => {
-                const rojeeDetails = "Rojee Tamang is a 28-year-old professional Beauty Therapist currently working at Mocca Spa in Bangalore.\n\n" +
+                const rojeeDetails = "Rojee Tamang is a 28-year-old professional Therapist currently working at VRS Spa & Saloon in Bangalore.\n\n" +
                     "**Status & Lifestyle:**\n" +
                     "• **Smoking**: Smoker (Indiment, Connect, Shift)\n" +
                     "• **Honesty**: Truth 40% | Lie 50% | Doubt 10%\n" +

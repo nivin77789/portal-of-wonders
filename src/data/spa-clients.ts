@@ -70,6 +70,15 @@ export interface ClientData {
   traits: string[];
   lifestyle: { smoking: string; alcohol: string; sleep: string };
   languages: string[];
+  experience?: {
+    company: string;
+    duration: string;
+    role: string;
+    desc?: string;
+    phone?: string;
+    directionUrl?: string;
+    legalDetails?: string;
+  }[];
 }
 
 export function generateClients(): ClientData[] {
@@ -128,7 +137,7 @@ export function generateClients(): ClientData[] {
       user = {
         ...user,
         age: 28,
-        spa: "Mocca",
+        spa: "VRS Spa & Saloon",
         status: "Single",
         partner: "-",
         partnerOccupation: "-",
@@ -147,7 +156,44 @@ export function generateClients(): ClientData[] {
         totalSpend: "₹128,100",
         traits: ["High Emotional Intelligence", "Resilient", "Strategic Manager", "Loyal"],
         lifestyle: { smoking: "Smoker (indiment, connect, shift)", alcohol: "Wine (Social)", sleep: "-" },
-        languages: ["English", "Hindi", "Nepali"]
+        languages: ["English", "Hindi", "Nepali"],
+        experience: [
+          {
+            role: "Therapist",
+            company: "VRS Spa & Saloon",
+            duration: "Present",
+            desc: "1st floor, 1st Cross Rd, near kanti sweets, Aswath Nagar, Marathahalli, Bengaluru 560037",
+            phone: "+917975918435",
+            directionUrl: "https://www.google.com/maps/search/?api=1&query=VRS+spa+%26+saloon+Marathahalli",
+            legalDetails: "Registered under Karnataka Shops and Commercial Establishments Act. Trade License: BBMP/WZ/2024/7748. Status: Active."
+          },
+          {
+            role: "Therapist",
+            company: "Mocca Unisex Spa (Borewell Rd)",
+            duration: "Previous",
+            desc: "ground floor, 43/2 6th cross, Borewell Rd, Bengaluru 560066",
+            phone: "+917019694470",
+            directionUrl: "https://www.google.com/maps/search/?api=1&query=Mocca+Unisex+Spa+Borewell+Rd+Bengaluru",
+            legalDetails: "Health License No: HL/2022/992. Professional Tax Registered. Status: Operational."
+          },
+          {
+            role: "Therapist",
+            company: "O3 Unisex Spa and Salon",
+            duration: "Previous",
+            desc: "34, Borewell Rd, Palm Meadows, Nallurhalli, Whitefield, Bengaluru 560066",
+            phone: "+919148077866",
+            directionUrl: "https://www.google.com/maps/search/?api=1&query=O3+Unisex+Spa+Palm+Meadows+Whitefield",
+            legalDetails: "GSTIN: 29AABCX1234F1Z5. Fire Safety Clearance: DFS/BNG/2023. Status: Operational."
+          },
+          {
+            role: "Therapist",
+            company: "Ozone unisex salon and spa",
+            duration: "Previous",
+            desc: "1st floor Shop No 3, Near Gear School Rd, Doddakannelli, Bengaluru 560035",
+            directionUrl: "https://www.google.com/maps/search/?api=1&query=Ozone+unisex+salon+and+spa+Doddakannelli",
+            legalDetails: "Branch Establishment Certificate: BEC/2021/44. Status: Closed/Inactive."
+          }
+        ]
       };
     }
 
