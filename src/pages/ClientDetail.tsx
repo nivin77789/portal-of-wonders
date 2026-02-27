@@ -172,9 +172,9 @@ export default function SpaDetail() {
   };
   const mapColor = isRojee ? '#E1306C' : (parseInt(randomStr) % 2 === 0 ? '#6c63ff' : '#42a5f5');
   const workHistory = isRojee ? [
-    { role: "Beauty Therapist", company: "Mocca Spa", duration: "Present", desc: "Specializing in premium client treatments." },
-    { role: "Senior Therapist", company: "O3 Spa", duration: "Previous", desc: "Advanced therapies and client management." },
-    { role: "Junior Massuse", company: "Ozone Wellness", duration: "2019 - 2021", desc: "Aromatherapy, deep tissue treatments." }
+    { role: "Beauty Therapist", company: "VRS spa", duration: "Present", desc: "Specializing in premium client treatments." },
+    { role: "Senior Therapist", company: "Mocca Spa", duration: "Previous", desc: "Specializing in premium client treatments." },
+    { role: "Senior Therapist", company: "O3 Spa", duration: "2021 - 2023", desc: "Advanced therapies and client management." }
   ] : [
     { role: "Therapist", company: `${user.spa} Spa`, duration: "Present", desc: "General client therapies and consulting." },
     { role: "Junior Staff", company: "Urban Wellness", duration: "Previous", desc: "Basic treatments and support." }
