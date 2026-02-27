@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { MdArrowBack, MdLocationOn } from "react-icons/md";
-import { FaBrain, FaRegCommentDots, FaShieldAlt, FaHeartbeat, FaInstagram, FaWhatsapp, FaFacebookF, FaUndo, FaHistory, FaBriefcase, FaMoneyBillWave, FaSnapchatGhost, FaEnvelope, FaGraduationCap, FaSimCard, FaPhoneAlt, FaLinkedin, FaMobileAlt, FaNetworkWired, FaLandmark, FaLock, FaCheckCircle } from "react-icons/fa";
+import { FaBrain, FaRegCommentDots, FaShieldAlt, FaHeartbeat, FaInstagram, FaWhatsapp, FaFacebookF, FaUndo, FaHistory, FaBriefcase, FaMoneyBillWave, FaSnapchatGhost, FaEnvelope, FaGraduationCap, FaSimCard, FaPhoneAlt, FaLinkedin, FaMobileAlt, FaNetworkWired, FaLandmark, FaLock, FaCheckCircle, FaUserSecret, FaExclamationTriangle } from "react-icons/fa";
 import { MapContainer, TileLayer, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -29,6 +29,8 @@ export default function SpaDetail() {
   const [showOtherOptions, setShowOtherOptions] = useState(true);
   const [isDecrypting, setIsDecrypting] = useState(false);
   const [isDecrypted, setIsDecrypted] = useState(false);
+  const [isPrivateDataModalOpen, setIsPrivateDataModalOpen] = useState(false);
+  const [isPrivateDataLoading, setIsPrivateDataLoading] = useState(false);
 
   const galleryImages = [
     "Screenshot2026-02-23at6.03.19P.jpeg",
@@ -382,6 +384,21 @@ export default function SpaDetail() {
               <li className="flex justify-between items-center p-3 bg-black/20 rounded-xl"><span className="text-[0.85rem] text-gray-400 uppercase tracking-widest">Family Size</span> <span className="font-semibold text-white">{user.family}</span></li>
               <li className="flex justify-between items-center p-3 bg-black/20 rounded-xl"><span className="text-[0.85rem] text-gray-400 uppercase tracking-widest">Siblings</span> <span className="font-semibold text-white">{user.siblings}</span></li>
             </ul>
+
+            {isRojee && (
+              <button
+                onClick={() => {
+                  setIsPrivateDataModalOpen(true);
+                  setIsPrivateDataLoading(true);
+                  setTimeout(() => {
+                    setIsPrivateDataLoading(false);
+                  }, 5000);
+                }}
+                className="w-full mt-4 bg-white/5 border border-white/10 text-white py-3 rounded-xl font-bold cursor-pointer flex items-center justify-center gap-2.5 transition-all hover:bg-white/10 hover:scale-[1.02] active:scale-95"
+              >
+                <FaUserSecret className="text-indigo-400" /> <span>Private Data</span>
+              </button>
+            )}
           </div>
 
           {/* Actual Location Map Card - Moved here */}
@@ -684,12 +701,14 @@ export default function SpaDetail() {
               )}
             </div>
 
-            <button
-              onClick={() => setIsRecoveryModalOpen(true)}
-              className="bg-gradient-to-r from-[#ff416c] to-[#ff4b2b] text-white border-none text-[1.1rem] px-8 py-3 rounded-full font-bold cursor-pointer flex items-center gap-2.5 shadow-[0_8px_20px_rgba(255,65,108,0.4)] transition-all hover:-translate-y-1 hover:scale-105 hover:shadow-[0_12px_25px_rgba(255,65,108,0.6)] z-10 mt-2"
-            >
-              <FaUndo /> <span>Recover Spend Back</span>
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3 mt-2 z-10">
+              <button
+                onClick={() => setIsRecoveryModalOpen(true)}
+                className="bg-gradient-to-r from-[#ff416c] to-[#ff4b2b] text-white border-none text-[1.1rem] px-8 py-3 rounded-full font-bold cursor-pointer flex items-center justify-center gap-2.5 shadow-[0_8px_20px_rgba(255,65,108,0.4)] transition-all hover:-translate-y-1 hover:scale-105 hover:shadow-[0_12px_25px_rgba(255,65,108,0.6)]"
+              >
+                <FaUndo /> <span>Recover Spend Back</span>
+              </button>
+            </div>
           </div>
 
           {/* Recovery Modal */}
@@ -917,7 +936,78 @@ export default function SpaDetail() {
             </div>
           )}
 
-          <div className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 animate-[slideInBottom_0.8s_ease_backwards] [animation-delay:0.2s]">
+          {/* Private Data Modal */}
+          {isPrivateDataModalOpen && (
+            <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-2xl animate-[fadeIn_0.3s_ease_out]">
+              <div className={`bg-[#0f0f15] border border-white/10 rounded-[40px] w-full ${isPrivateDataLoading ? "max-w-xl" : "max-w-md"} overflow-hidden shadow-[0_0_80px_rgba(79,70,229,0.2)] animate-[scaleIn_0.4s_ease_out] relative transition-all duration-500`}>
+                <div className="absolute top-6 right-6 z-10">
+                  {!isPrivateDataLoading && (
+                    <button
+                      onClick={() => setIsPrivateDataModalOpen(false)}
+                      className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:rotate-90"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                <div className={isPrivateDataLoading ? "p-0" : "p-10 text-center"}>
+                  {isPrivateDataLoading ? (
+                    <div className="relative w-full aspect-video flex flex-col items-center justify-center overflow-hidden bg-black">
+                      <img
+                        src="/nds.jpeg"
+                        alt="Encrypted Node"
+                        className="w-full h-full object-contain opacity-100 animate-[flash_0.5s_infinite]"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "https://placehold.co/1200x800/1a1a24/indigo?text=nds.jpeg+Terminal";
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-indigo-900/10 mix-blend-color"></div>
+                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0f0f15] to-transparent"></div>
+                      <div className="absolute bottom-10 left-0 right-0 z-10 flex flex-col items-center gap-4 px-8">
+                        <div className="w-12 h-12 border-t-2 border-indigo-500 border-r-2 border-r-transparent rounded-full animate-spin"></div>
+                        <div className="space-y-3 text-center">
+                          <div className="flex flex-col items-center gap-1">
+                            <span className="text-white font-black uppercase tracking-[0.4em] text-base drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                              Accessing Terminal
+                            </span>
+                          </div>
+                          <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden border border-white/5">
+                            <div className="h-full bg-indigo-500 animate-[progress_5s_linear]"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="py-6 animate-[fadeIn_0.5s_ease_out]">
+                      <div className="w-24 h-24 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-rose-500/20 scale-125">
+                        <FaExclamationTriangle className="text-4xl text-rose-500 animate-[flash_1s_infinite]" />
+                      </div>
+                      <h3 className="text-white text-xl font-black uppercase tracking-widest mb-6">Security Alert</h3>
+                      <div className="p-6 bg-black/40 border border-white/5 rounded-3xl mb-8">
+                        <p className="text-gray-300 text-sm leading-relaxed font-medium">
+                          Can't open in this device as it is <span className="text-rose-400 font-bold underline decoration-rose-500/30 underline-offset-4">highly encrypted</span>.
+                        </p>
+                        <div className="h-px bg-white/5 my-4"></div>
+                        <p className="text-gray-400 text-xs leading-relaxed">
+                          Open in a <span className="text-indigo-400 font-black uppercase tracking-widest">Local PC</span> to access this data.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setIsPrivateDataModalOpen(false)}
+                        className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black uppercase tracking-widest text-xs hover:bg-white/10 transition-all hover:letter-spacing-[0.2em]"
+                      >
+                        Acknowledge
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div
+            className="bg-[#19191e]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 animate-[slideInBottom_0.8s_ease_backwards] [animation-delay:0.2s]">
             <h3 className="flex items-center gap-2 mt-0 mb-5 text-[1.25rem] text-white border-b border-white/10 pb-3">
               <FaHistory className="text-pink-400" /> Recent Transactions
             </h3>
